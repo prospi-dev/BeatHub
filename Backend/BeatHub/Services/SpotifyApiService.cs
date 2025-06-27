@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Headers;
-using System.Text.Json;
 
 public class SpotifyApiService
 {
@@ -28,10 +27,51 @@ public class SpotifyApiService
         return await response.Content.ReadAsStringAsync();
     }
 
+    public async Task<string> SearchAsync(string query, string type)
+    {
+        var client = await GetAuthenticatedClientAsync();
+        var url = $"https://api.spotify.com/v1/search?q={Uri.EscapeDataString(query)}&type={Uri.EscapeDataString(type)}";
+        var response = await client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task<string> GetAlbumAsync(string albumId)
+    {
+        var client = await GetAuthenticatedClientAsync();
+        var response = await client.GetAsync($"https://api.spotify.com/v1/albums/{albumId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
     public async Task<string> GetArtistAsync(string artistId)
     {
         var client = await GetAuthenticatedClientAsync();
         var response = await client.GetAsync($"https://api.spotify.com/v1/artists/{artistId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task<string> GetArtistAlbumsAsync(string artistId)
+    {
+        var client = await GetAuthenticatedClientAsync();
+        var response = await client.GetAsync($"https://api.spotify.com/v1/artists/{artistId}/albums");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task<string> GetArtistTopTracksAsync(string artistId, string country = "US")
+    {
+        var client = await GetAuthenticatedClientAsync();
+        var response = await client.GetAsync($"https://api.spotify.com/v1/artists/{artistId}/top-tracks?country={country}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task<string> GetTrackAsync(string trackId)
+    {
+        var client = await GetAuthenticatedClientAsync();
+        var response = await client.GetAsync($"https://api.spotify.com/v1/tracks/{trackId}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
