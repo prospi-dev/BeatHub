@@ -1,0 +1,6 @@
+@BeatHub_HostAddress = http://localhost:5132
+
+GET {{BeatHub_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
