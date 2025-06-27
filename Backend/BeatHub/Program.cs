@@ -7,7 +7,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<SpotifyAuthService>();
+
+builder.Services.AddScoped<SpotifyApiService>();
+
+builder.Configuration.AddEnvironmentVariables();
+
 var app = builder.Build();
+
+DotNetEnv.Env.Load();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
