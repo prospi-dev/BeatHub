@@ -1,0 +1,39 @@
+# ---- GLOBAL ----
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+
+# ---- FRONTEND (Vite + React) ----
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ---- BACKEND (ASP.NET Core) ----
+backend/bin/
+backend/obj/
+backend/*.db
+backend/*.sqlite
+backend/*.pdb
+backend/.vs/
+backend/.vscode/
+backend/appsettings.Development.json
+backend/appsettings.Local.json
+backend/secrets.json
+
+# ---- SYSTEM ----
+*.log
+*.tmp
+*.swp
+.vscode/
+.idea/
+*.user
+*.suo
+*.psess
+*.vsp
+*.ncrunch*
+_ReSharper*/
+*.DotSettings.user
