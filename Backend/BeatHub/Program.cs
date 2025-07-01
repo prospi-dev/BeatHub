@@ -14,6 +14,17 @@ builder.Services.AddScoped<SpotifyApiService>();
 
 builder.Configuration.AddEnvironmentVariables();
 
+builder.Services.AddCors(options => // So we can use the api from the frontend
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 DotNetEnv.Env.Load();
@@ -26,7 +37,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowFrontend");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
