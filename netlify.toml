@@ -1,0 +1,20 @@
+[build]
+  # Base directory containing the React + Vite project
+  base = "Frontend/BeatHub"
+  
+  # Directory to publish (where the built files are)
+  publish = "Frontend/BeatHub/dist"
+  
+  # Build command to run
+  command = "npm run build"
+
+[build.environment]
+  # Node.js version to use (18 or higher)
+  NODE_VERSION = "18"
+
+# Redirects for Single Page Application (SPA) support
+# This ensures React Router works correctly on Netlify
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
