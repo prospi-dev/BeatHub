@@ -17,6 +17,48 @@
   },
   {
     "ContainingType": "SpotifyController",
+    "Method": "GetAlbumTracks",
+    "RelativePath": "api/Spotify/albums/{id}/tracks",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "offset",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SpotifyController",
+    "Method": "GetArtists",
+    "RelativePath": "api/Spotify/artists",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SpotifyController",
     "Method": "GetArtist",
     "RelativePath": "api/Spotify/artists/{id}",
     "HttpMethod": "GET",
@@ -43,6 +85,16 @@
         "Name": "id",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "offset",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -70,12 +122,49 @@
   },
   {
     "ContainingType": "SpotifyController",
+    "Method": "GetFeaturedPlaylists",
+    "RelativePath": "api/Spotify/featured-playlists",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SpotifyController",
     "Method": "GetNewReleases",
     "RelativePath": "api/Spotify/new-releases",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "offset",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SpotifyController",
+    "Method": "GetPlaylistsTracks",
+    "RelativePath": "api/Spotify/playlists/{playlistId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "playlistId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -93,6 +182,21 @@
       },
       {
         "Name": "type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "offset",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "album_type",
         "Type": "System.String",
         "IsRequired": false
       }

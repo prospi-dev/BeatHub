@@ -4,3 +4,36 @@
   background-color: #121212;
   font-family: "Montserrat", sans-serif;
 }
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #f97316;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #f97316;
+    cursor: pointer;
+    border: none;
+}
+
+.card-large {
+    min-height: 280px;
+}
+
+.card-medium {
+    min-height: 240px;
+}
+
+.card-small {
+    min-height: 200px;
+}
+
+.card-extra-small {
+    min-height: 160px;
+}
