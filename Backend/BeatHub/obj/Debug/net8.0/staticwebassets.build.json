@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "FGO+UNpEEjem52370Fr2u3xSAkyNILwhXGYN4vQs4bA=",
+  "Hash": "VYDZ5M5aO4aM2wrzlp0MnJgdZ+/riny94IEg7zJA5fE=",
   "Source": "BeatHub",
   "BasePath": "_content/BeatHub",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }
