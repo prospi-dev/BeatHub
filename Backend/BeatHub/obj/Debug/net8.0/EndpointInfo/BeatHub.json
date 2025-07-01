@@ -265,28 +265,6 @@
         }
       }
     },
-    "/api/Spotify/tracks/{id}": {
-      "get": {
-        "tags": [
-          "Spotify"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Spotify/featured-playlists": {
       "get": {
         "tags": [
@@ -307,6 +285,50 @@
         "parameters": [
           {
             "name": "playlistId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Spotify/tracks/{tracksId}": {
+      "get": {
+        "tags": [
+          "Spotify"
+        ],
+        "parameters": [
+          {
+            "name": "tracksId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Spotify/audio-features/{tracksId}": {
+      "get": {
+        "tags": [
+          "Spotify"
+        ],
+        "parameters": [
+          {
+            "name": "tracksId",
             "in": "path",
             "required": true,
             "schema": {

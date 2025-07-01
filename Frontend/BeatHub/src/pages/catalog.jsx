@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'
 import BeatHubLogo from '../components/beatHubLogo.jsx'
 import { CiGrid41, CiFilter, CiSearch } from "react-icons/ci"
 import { IoClose, IoChevronDown } from "react-icons/io5"
-import { FaPlay, FaHeart, FaShare } from "react-icons/fa"
+import { FaHeart, FaShare, FaStar } from "react-icons/fa"
 import { getNewReleases, getPopularArtists, getTopTracks, search } from '../api/spotifyService.js'
 import AlbumCard from '../components/albumCard.jsx'
 import ArtistCard from '../components/artistCard.jsx'
@@ -259,7 +259,6 @@ const catalog = () => {
     }, [data.length, type, searchQuery])
 
     const renderContent = () => {
-        // Generar clases dinámicas basadas en el número de columnas
         const getGridClass = (columns) => {
             const gridClasses = {
                 3: 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3',

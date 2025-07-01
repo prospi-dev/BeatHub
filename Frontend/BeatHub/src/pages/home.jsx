@@ -1,7 +1,8 @@
 import React from 'react'
 import BeatHubLogo from '../components/beatHubLogo'
 import { IoIosMenu, IoIosSearch, IoIosStar } from "react-icons/io";
-import { FaHeadphones, FaUsers, FaPen, FaHeart, FaPlay, FaChartLine } from "react-icons/fa";
+import { FaHeadphones, FaUsers, FaPen, FaHeart, FaChartLine } from "react-icons/fa";
+import { IoMusicalNote } from "react-icons/io5";
 import { HiMusicNote } from "react-icons/hi";
 import SpotifyFullLogo from '../assets/logos/Full_Logo_White_CMYK.svg'
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +47,7 @@ const Home = () => {
                 {/* Stats Section */}
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto'>
                     <div className='text-center p-6 bg-gray-800/50 rounded-xl backdrop-blur-sm'>
-                        <FaPlay className='text-3xl text-green-500 mx-auto mb-3' />
+                        <IoMusicalNote className='text-3xl text-green-500 mx-auto mb-3' />
                         <h3 className='text-2xl font-bold text-white mb-1'>50M+</h3>
                         <p className='text-gray-400'>Songs Available</p>
                     </div>

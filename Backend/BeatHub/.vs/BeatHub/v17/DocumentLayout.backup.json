@@ -80,7 +80,7 @@
               "RelativeDocumentMoniker": "Controllers\\SpotifyController.cs",
               "ToolTip": "C:\\Users\\manup\\Documents\\Dev\\BeatHub\\Backend\\BeatHub\\Controllers\\SpotifyController.cs",
               "RelativeToolTip": "Controllers\\SpotifyController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFkAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAYwFsAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-27T15:53:35.251Z",
               "EditorCaption": ""
@@ -93,7 +93,7 @@
               "RelativeDocumentMoniker": "Services\\SpotifyApiService.cs",
               "ToolTip": "C:\\Users\\manup\\Documents\\Dev\\BeatHub\\Backend\\BeatHub\\Services\\SpotifyApiService.cs",
               "RelativeToolTip": "Services\\SpotifyApiService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHMAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAG0AAAAAAAAAAAAUwFoAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-27T15:53:02.682Z",
               "EditorCaption": ""
@@ -120,8 +120,7 @@
               "RelativeToolTip": "Services\\SpotifyAuthService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwA8AAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-27T15:47:43.505Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-27T15:47:43.505Z"
             },
             {
               "$type": "Document",

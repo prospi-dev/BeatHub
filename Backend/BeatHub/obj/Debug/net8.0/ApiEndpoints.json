@@ -122,6 +122,22 @@
   },
   {
     "ContainingType": "SpotifyController",
+    "Method": "GetTracksAudioFeatures",
+    "RelativePath": "api/Spotify/audio-features/{tracksId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tracksId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SpotifyController",
     "Method": "GetFeaturedPlaylists",
     "RelativePath": "api/Spotify/featured-playlists",
     "HttpMethod": "GET",
@@ -205,14 +221,14 @@
   },
   {
     "ContainingType": "SpotifyController",
-    "Method": "GetTrack",
-    "RelativePath": "api/Spotify/tracks/{id}",
+    "Method": "GetTracks",
+    "RelativePath": "api/Spotify/tracks/{tracksId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
+        "Name": "tracksId",
         "Type": "System.String",
         "IsRequired": true
       }

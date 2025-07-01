@@ -9,30 +9,43 @@ export const search = async (query, type, offset = 0) => {
     if (!query || !query.trim()) {
         throw new Error('Search query is required')
     }
-    
+
     const typeMapping = {
         'albums': 'album',
-        'artists': 'artist', 
+        'artists': 'artist',
         'tracks': 'track',
         'album': 'album',
         'artist': 'artist',
         'track': 'track'
     }
-    
+
     const spotifyType = typeMapping[type]
     if (!spotifyType) {
         throw new Error('Invalid search type')
     }
-    
+
     let searchUrl = `/search?q=${encodeURIComponent(query.trim())}&type=${spotifyType}&limit=20&offset=${offset}`
-    
+
     if (spotifyType === 'album') {
         searchUrl += `&album_type=album`
     }
-    
+
     const response = await api.get(searchUrl);
     return response.data;
 };
+
+export const getTrackDetails = async (trackId) => {
+    try {
+        const trackResponse = await api.get(`/tracks/${trackId}`)
+
+        return {
+            track: trackResponse.data
+        }
+    } catch (error) {
+        console.error('Error fetching track details:', error)
+        throw error
+    }
+}
 
 export const getArtistsFromNewReleases = async () => {
     const newReleases = await getNewReleases()
@@ -43,7 +56,7 @@ export const getArtistsFromNewReleases = async () => {
     )
 
     const artistIds = uniqueBasicArtists.map(artist => artist.id).slice(0, 20)
-    const detailedArtists = await getArtistsDetails(artistIds)
+    const detailedArtists = await getMultipleArtistsDetails(artistIds)
 
     return detailedArtists
 }
@@ -76,6 +89,23 @@ export const getArtistsByGenres = async () => {
     }
 }
 
+export const getAlbumDetails = async (albumId) => {
+    try {
+        const [albumResponse, tracksResponse] = await Promise.all([
+            api.get(`/albums/${albumId}`),
+            api.get(`/albums/${albumId}/tracks`)
+        ])
+
+        return {
+            album: albumResponse.data,
+            tracks: tracksResponse.data
+        }
+    } catch (error) {
+        console.error('Error fetching album details:', error)
+        throw error
+    }
+}
+
 export const getPopularArtists = async (offset = 0) => {
     try {
         if (offset === 0) {
@@ -89,7 +119,7 @@ export const getPopularArtists = async (offset = 0) => {
                 index === self.findIndex(a => a.id === artist.id)
             )
 
-            return uniqueArtists.slice(0, 50) 
+            return uniqueArtists.slice(0, 50)
         } else {
             const [newReleaseArtists, genreArtists] = await Promise.all([
                 getArtistsFromNewReleases(),
@@ -109,20 +139,39 @@ export const getPopularArtists = async (offset = 0) => {
     }
 }
 
-export const getArtistsDetails = async (artistIds) => {
+export const getArtistsDetails = async (artistId) => {
     try {
-        const idsString = artistIds.join(',')
-        const response = await api.get(`/artists?ids=${idsString}`)
-        return response.data.artists || []
+        const [artistResponse, topTracksResponse, albumsResponse] = await Promise.all([
+            api.get(`/artists/${artistId}`),
+            api.get(`/artists/${artistId}/top-tracks`),
+            api.get(`/artists/${artistId}/albums`)
+        ])
+
+        return {
+            artist: artistResponse.data,
+            topTracks: topTracksResponse.data,
+            albums: albumsResponse.data
+        }
     } catch (error) {
-        console.error('Error fetching artists details:', error)
+        console.error('Error fetching artist details:', error)
+        throw error
+    }
+}
+
+export const getMultipleArtistsDetails = async (artistIds) => {
+    try {
+        const artistPromises = artistIds.map(id => api.get(`/artists/${id}`))
+        const results = await Promise.all(artistPromises)
+        return results.map(result => result.data)
+    } catch (error) {
+        console.error('Error fetching multiple artists details:', error)
         return []
     }
 }
 
 export const getTopTracks = async (offset = 0) => {
     try {
-        const newReleases = await getNewReleases(0) 
+        const newReleases = await getNewReleases(0)
         const albums = newReleases.albums?.items?.slice(0, 50) || []
 
         const trackPromises = albums.map(album =>

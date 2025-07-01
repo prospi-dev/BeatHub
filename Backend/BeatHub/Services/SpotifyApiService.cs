@@ -90,14 +90,6 @@ public class SpotifyApiService
         return await response.Content.ReadAsStringAsync();
     }
 
-    public async Task<string> GetTrackAsync(string trackId)
-    {
-        var client = await GetAuthenticatedClientAsync();
-        var response = await client.GetAsync($"https://api.spotify.com/v1/tracks/{trackId}");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
-    }
-
     public async Task<string> GetFeaturedPlaylistsAsync()
     {
         var client = await GetAuthenticatedClientAsync();
@@ -110,6 +102,20 @@ public class SpotifyApiService
     {
         var client = await GetAuthenticatedClientAsync();
         var response = await client.GetAsync($"https://api.spotify.com/v1/playlists/{playlistId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+    public async Task<string> GetTracksAsync(string tracksId)
+    {
+        var client = await GetAuthenticatedClientAsync();
+        var response = await client.GetAsync($"https://api.spotify.com/v1/tracks/{tracksId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+    public async Task<string> GetTracksAudioFeaturesAsync(string tracksId)
+    {
+        var client = await GetAuthenticatedClientAsync();
+        var response = await client.GetAsync($"https://api.spotify.com/v1/audio-features/{tracksId}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
