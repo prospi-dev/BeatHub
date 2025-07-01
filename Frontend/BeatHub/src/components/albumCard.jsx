@@ -1,8 +1,9 @@
 import React from 'react'
-
+import { useNavigate } from 'react-router-dom'
 const albumCard = ({album}) => {
+    const navigate = useNavigate()
     return (
-        <div key={album.id} className="w-full hover:scale-105">
+        <div key={album.id} className="w-full hover:scale-105" onClick={() => navigate(`/album/${album.id}`)}>
             <img
                 src={album.images?.[0]?.url}
                 alt={album.name}

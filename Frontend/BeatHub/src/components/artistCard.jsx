@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { use } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const artistCard = ({ artist }) => {
-    console.log('Artist Card:', artist)
+    
+    const navigate = useNavigate()
+
     return (
-        <div key={artist.id} className="w-full hover:scale-105">
+        <div key={artist.id} className="w-full hover:scale-105" onClick={() => navigate(`/artist/${artist.id}`)}>
             <img
                 src={artist.images?.[0]?.url || '/default-artist.png'}
                 alt={artist.name}

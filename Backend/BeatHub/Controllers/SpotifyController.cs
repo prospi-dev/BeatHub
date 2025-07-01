@@ -67,13 +67,6 @@ public class SpotifyController : ControllerBase
         return Content(content, "application/json");
     }
 
-    [HttpGet("tracks/{id}")]
-    public async Task<IActionResult> GetTrack(string id)
-    {
-        var content = await _spotifyApiService.GetTrackAsync(id);
-        return Content(content, "application/json");
-    }
-
     [HttpGet("featured-playlists")]
     public async Task<IActionResult> GetFeaturedPlaylists()
     {
@@ -85,6 +78,18 @@ public class SpotifyController : ControllerBase
     public async Task<IActionResult> GetPlaylistsTracks(string playlistId)
     {
         var content = await _spotifyApiService.GetPlaylistsTracksAsync(playlistId);
+        return Content(content, "application/json");
+    }
+    [HttpGet("tracks/{tracksId}")]
+    public async Task<IActionResult> GetTracks(string tracksId)
+    {
+        var content = await _spotifyApiService.GetTracksAsync(tracksId);
+        return Content(content, "application/json");
+    }
+    [HttpGet("audio-features/{tracksId}")]
+    public async Task<IActionResult> GetTracksAudioFeatures(string tracksId)
+    {
+        var content = await _spotifyApiService.GetTracksAudioFeaturesAsync(tracksId);
         return Content(content, "application/json");
     }
 }

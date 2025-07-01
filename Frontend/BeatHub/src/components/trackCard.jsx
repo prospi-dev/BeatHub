@@ -1,8 +1,10 @@
 import React from 'react'
-
+import { useNavigate } from 'react-router-dom'
 const trackCard = ({ track }) => {
+    const navigate = useNavigate();
+    
     return (
-        <div key={track.id} className="w-full hover:scale-105">
+        <div key={track.id} className="w-full hover:scale-105" onClick={() => navigate(`/track/${track.id}`)}>
             <img
                 src={track.album?.images?.[0]?.url}
                 alt={track.name}
