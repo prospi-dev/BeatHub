@@ -169,7 +169,7 @@
   },
   {
     "ContainingType": "SpotifyController",
-    "Method": "GetPlaylistsTracks",
+    "Method": "GetPlaylist",
     "RelativePath": "api/Spotify/playlists/{playlistId}",
     "HttpMethod": "GET",
     "IsController": true,

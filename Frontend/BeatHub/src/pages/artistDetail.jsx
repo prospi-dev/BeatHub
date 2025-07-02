@@ -142,7 +142,7 @@ const artistDetail = () => {
           <h2 className="text-2xl font-bold mb-4">Popular Tracks</h2>
           <div className="space-y-2">
             {topTracks.slice(0, 5).map((track, index) => (
-              <div key={track.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 group transition-colors">
+              <div key={track.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 group transition-colors" onClick={() => navigate(`/track/${track.id}`)}>
                 <span className="text-gray-400 w-6 text-center">{index + 1}</span>
                 <img
                   src={track.album?.images?.[0]?.url || '/default-track.png'}

@@ -171,9 +171,31 @@ export const getMultipleArtistsDetails = async (artistIds) => {
 
 export const getTopTracks = async (offset = 0) => {
     try {
-        const newReleases = await getNewReleases(0)
-        const albums = newReleases.albums?.items?.slice(0, 50) || []
-
+        // Calculate how many album pages we need to fetch to have enough tracks
+        const albumsPerPage = 20
+        const tracksNeeded = offset + 20 
+        const pagesNeeded = Math.ceil(tracksNeeded / albumsPerPage) + 1 // +1 for buffer
+        
+        // Fetch multiple pages of new releases to get more albums
+        const albumPromises = []
+        for (let i = 0; i < pagesNeeded; i++) {
+            albumPromises.push(getNewReleases(i * albumsPerPage))
+        }
+        
+        const albumResults = await Promise.all(albumPromises)
+        const allAlbums = []
+        
+        // Combine all albums from different pages
+        albumResults.forEach(result => {
+            if (result.albums?.items) {
+                allAlbums.push(...result.albums.items)
+            }
+        })
+        
+        // Limit to first 200 albums to avoid too many API calls
+        const albums = allAlbums.slice(0, 200)
+        
+        // Get one track from each album
         const trackPromises = albums.map(album =>
             api.get(`/albums/${album.id}/tracks?limit=1`)
         )
@@ -181,6 +203,7 @@ export const getTopTracks = async (offset = 0) => {
         const results = await Promise.all(trackPromises)
         const tracks = []
 
+        // Process each album's tracks and add album info
         results.forEach((result, index) => {
             if (result.data.items) {
                 const albumInfo = albums[index]
@@ -196,7 +219,6 @@ export const getTopTracks = async (offset = 0) => {
                 tracks.push(...tracksWithAlbum)
             }
         })
-
         return tracks.slice(offset, offset + 20)
     } catch (error) {
         console.error('Error fetching tracks from albums:', error)

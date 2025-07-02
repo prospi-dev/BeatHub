@@ -277,28 +277,6 @@
         }
       }
     },
-    "/api/Spotify/playlists/{playlistId}": {
-      "get": {
-        "tags": [
-          "Spotify"
-        ],
-        "parameters": [
-          {
-            "name": "playlistId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Spotify/tracks/{tracksId}": {
       "get": {
         "tags": [
@@ -329,6 +307,28 @@
         "parameters": [
           {
             "name": "tracksId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Spotify/playlists/{playlistId}": {
+      "get": {
+        "tags": [
+          "Spotify"
+        ],
+        "parameters": [
+          {
+            "name": "playlistId",
             "in": "path",
             "required": true,
             "schema": {
