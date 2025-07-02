@@ -11,12 +11,12 @@
       "RelativeMoniker": "D:0:0:{1710BC85-145A-44DC-9E26-95B2E7EA3BAA}|BeatHub.csproj|solutionrelative:services\\spotifyapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1710BC85-145A-44DC-9E26-95B2E7EA3BAA}|BeatHub.csproj|c:\\users\\manup\\documents\\dev\\beathub\\backend\\beathub\\services\\spotifyauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1710BC85-145A-44DC-9E26-95B2E7EA3BAA}|BeatHub.csproj|solutionrelative:services\\spotifyauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1710BC85-145A-44DC-9E26-95B2E7EA3BAA}|BeatHub.csproj|c:\\users\\manup\\documents\\dev\\beathub\\backend\\beathub\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1710BC85-145A-44DC-9E26-95B2E7EA3BAA}|BeatHub.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1710BC85-145A-44DC-9E26-95B2E7EA3BAA}|BeatHub.csproj|c:\\users\\manup\\documents\\dev\\beathub\\backend\\beathub\\services\\spotifyauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1710BC85-145A-44DC-9E26-95B2E7EA3BAA}|BeatHub.csproj|solutionrelative:services\\spotifyauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1710BC85-145A-44DC-9E26-95B2E7EA3BAA}|BeatHub.csproj|c:\\users\\manup\\documents\\dev\\beathub\\backend\\beathub\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -80,7 +80,7 @@
               "RelativeDocumentMoniker": "Controllers\\SpotifyController.cs",
               "ToolTip": "C:\\Users\\manup\\Documents\\Dev\\BeatHub\\Backend\\BeatHub\\Controllers\\SpotifyController.cs",
               "RelativeToolTip": "Controllers\\SpotifyController.cs",
-              "ViewState": "AgIAAEMAAAAAAAAAAAAYwFsAAABFAAAAAAAAAA==",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAuwEsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-27T15:53:35.251Z",
               "EditorCaption": ""
@@ -93,26 +93,27 @@
               "RelativeDocumentMoniker": "Services\\SpotifyApiService.cs",
               "ToolTip": "C:\\Users\\manup\\Documents\\Dev\\BeatHub\\Backend\\BeatHub\\Services\\SpotifyApiService.cs",
               "RelativeToolTip": "Services\\SpotifyApiService.cs",
-              "ViewState": "AgIAAG0AAAAAAAAAAAAUwFoAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAGUAAAAAAAAAAADwv4EAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-27T15:53:02.682Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\manup\\Documents\\Dev\\BeatHub\\Backend\\BeatHub\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\manup\\Documents\\Dev\\BeatHub\\Backend\\BeatHub\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAAC0AAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-27T15:48:14.99Z"
+              "WhenOpened": "2025-06-27T15:48:14.99Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "SpotifyAuthService.cs",
               "DocumentMoniker": "C:\\Users\\manup\\Documents\\Dev\\BeatHub\\Backend\\BeatHub\\Services\\SpotifyAuthService.cs",
               "RelativeDocumentMoniker": "Services\\SpotifyAuthService.cs",

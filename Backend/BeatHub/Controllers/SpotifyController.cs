@@ -74,12 +74,6 @@ public class SpotifyController : ControllerBase
         return Content(content, "application/json");
     }
 
-    [HttpGet("playlists/{playlistId}")]
-    public async Task<IActionResult> GetPlaylistsTracks(string playlistId)
-    {
-        var content = await _spotifyApiService.GetPlaylistsTracksAsync(playlistId);
-        return Content(content, "application/json");
-    }
     [HttpGet("tracks/{tracksId}")]
     public async Task<IActionResult> GetTracks(string tracksId)
     {

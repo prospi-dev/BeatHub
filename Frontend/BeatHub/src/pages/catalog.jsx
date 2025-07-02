@@ -224,7 +224,7 @@ const catalog = () => {
                             result = sorted.sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
                         }
                         break
-                    case 'date': // Mantener compatibilidad
+                    case 'date':
                         if (type === 'albums') {
                             result = sorted.sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
                         }
@@ -358,7 +358,7 @@ const catalog = () => {
                     {/* Header Actions */}
                     <div className='flex items-center gap-3'>
                         {/* Slider */}
-                        <div className='flex items-center gap-3'>
+                        <div className='hidden md:flex items-center gap-3'>
                             <CiGrid41 className='text-lg text-gray-400' />
                             <input
                                 type="range"
