@@ -22,7 +22,7 @@ namespace BeatHub.Models
 
         [Required]
         [Range(1, 5)]
-        public int Rating { get; set; } // Calificación de 1 a 5 estrellas
+        public int Rating { get; set; } // 1 to 5 stars review
 
         [MaxLength(1000)]
         public string Comment { get; set; } = string.Empty; // Review text
