@@ -1,12 +1,1 @@
-{
-  "Version": 1,
-  "Hash": "FGO+UNpEEjem52370Fr2u3xSAkyNILwhXGYN4vQs4bA=",
-  "Source": "BeatHub",
-  "BasePath": "_content/BeatHub",
-  "Mode": "Default",
-  "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
-}
+{"Version":1,"Hash":"VW6kEUvjRQY7WBAyZfWizb4ZIvpKGXzvIxJN7c0gJv8=","Source":"BeatHub","BasePath":"/","Mode":"Root","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[],"Assets":[],"Endpoints":[]}

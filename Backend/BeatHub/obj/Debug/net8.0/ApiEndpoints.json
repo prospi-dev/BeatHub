@@ -169,22 +169,6 @@
   },
   {
     "ContainingType": "SpotifyController",
-    "Method": "GetPlaylist",
-    "RelativePath": "api/Spotify/playlists/{playlistId}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "playlistId",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SpotifyController",
     "Method": "Search",
     "RelativePath": "api/Spotify/search",
     "HttpMethod": "GET",

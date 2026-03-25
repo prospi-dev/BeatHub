@@ -320,28 +320,6 @@
           }
         }
       }
-    },
-    "/api/Spotify/playlists/{playlistId}": {
-      "get": {
-        "tags": [
-          "Spotify"
-        ],
-        "parameters": [
-          {
-            "name": "playlistId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
     }
   },
   "components": { }

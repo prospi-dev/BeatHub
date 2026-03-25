@@ -12,17 +12,17 @@ frontend/node_modules/
 frontend/dist/
 frontend/.vite/
 
-# ---- BACKEND (ASP.NET Core) ----
-backend/bin/
-backend/obj/
-backend/*.db
-backend/*.sqlite
-backend/*.pdb
-backend/.vs/
-backend/.vscode/
-backend/appsettings.Development.json
-backend/appsettings.Local.json
-backend/secrets.json
+# ---- BACKEND/BeatHub (ASP.NET Core) ----
+Backend/BeatHub/bin/
+Backend/BeatHub/obj/
+Backend/BeatHub/*.db
+Backend/BeatHub/*.sqlite
+Backend/BeatHub/*.pdb
+Backend/BeatHub/.vs/
+Backend/BeatHub/.vscode/
+Backend/BeatHub/appsettings.Development.json
+Backend/BeatHub/appsettings.Local.json
+Backend/BeatHub/secrets.json
 
 # ---- SYSTEM ----
 *.log
