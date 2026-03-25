@@ -1,3 +1,11 @@
+using System.Text;
+using BeatHub.Data;
+using BeatHub.Models;
+using BeatHub.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
