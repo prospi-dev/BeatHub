@@ -25,7 +25,7 @@ namespace BeatHub.Models
         public int Rating { get; set; } // 1 to 5 stars review
 
         [MaxLength(1000)]
-        public string Comment { get; set; } = string.Empty; // Review text
+        public string? Comment { get; set; } = string.Empty; // Review text
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
