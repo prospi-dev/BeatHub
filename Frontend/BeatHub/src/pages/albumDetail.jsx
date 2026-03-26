@@ -5,16 +5,19 @@ import BeatHubLogo from '../components/beatHubLogo'
 import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
 import { useColor } from 'color-thief-react'
+import ReviewModal from '../components/ReviewModal'
+import { useAuth } from '../context/AuthContext'
 
 const albumDetail = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [album, setAlbum] = useState(null)
     const [tracks, setTracks] = useState([])
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
     const [artistsDetails, setArtistsDetails] = useState([])
     const { id } = useParams()
     const navigate = useNavigate()
-
+    const { user } = useAuth()
     const fetchData = async () => {
         try {
             setLoading(true)
@@ -118,7 +121,9 @@ const albumDetail = () => {
                                 <span>{getTotalDuration()}</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
+                                <button
+                                    onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
+                                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
                                     <FaStar />
                                     Add Review
                                 </button>
@@ -319,6 +324,13 @@ const albumDetail = () => {
                         </div>
                     </div>
                 )}
+                <ReviewModal
+                    isOpen={isReviewModalOpen}
+                    onClose={() => setIsReviewModalOpen(false)}
+                    itemName={album?.name || 'this album'}
+                    itemId={id}
+                    itemType="album"
+                />
             </main>
         </div>
     )

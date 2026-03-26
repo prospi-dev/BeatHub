@@ -5,12 +5,15 @@ import BeatHubLogo from '../components/beatHubLogo'
 import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaMusic } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
 import { useColor } from 'color-thief-react'
-
+import ReviewModal from '../components/ReviewModal'
+import { useAuth } from '../context/AuthContext'
 const TrackDetail = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [track, setTrack] = useState(null)
-    const [artistsDetails, setArtistsDetails] = useState([]) // Nuevo estado
+    const [artistsDetails, setArtistsDetails] = useState([])
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
+    const { user } = useAuth()
     const { id } = useParams()
     const navigate = useNavigate()
 
@@ -109,7 +112,9 @@ const TrackDetail = () => {
                                 <span>{formatDuration(track?.duration_ms)}</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
+                                <button
+                                    onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
+                                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
                                     <FaStar />
                                     Add Review
                                 </button>
@@ -132,7 +137,9 @@ const TrackDetail = () => {
         <div className="bg-gray-800 p-6 rounded-lg mb-8">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Reviews</h2>
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 transition-colors">
+                <button
+                    onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 transition-colors">
                     <FaStar />
                     Write Review
                 </button>
@@ -323,6 +330,13 @@ const TrackDetail = () => {
                         </div>
                     </div>
                 )}
+                <ReviewModal
+                    isOpen={isReviewModalOpen}
+                    onClose={() => setIsReviewModalOpen(false)}
+                    itemName={track?.name || 'this track'}
+                    itemId={id}
+                    itemType="track"
+                />
             </main>
         </div>
     )

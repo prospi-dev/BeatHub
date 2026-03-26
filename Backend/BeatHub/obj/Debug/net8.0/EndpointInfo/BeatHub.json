@@ -504,6 +504,7 @@
     "schemas": {
       "CreateReviewDto": {
         "required": [
+          "itemType",
           "rating",
           "spotifyItemId"
         ],
@@ -525,8 +526,8 @@
             "nullable": true
           },
           "itemType": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false

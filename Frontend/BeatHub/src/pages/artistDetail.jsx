@@ -8,6 +8,7 @@ import AlbumCard from '../components/albumCard'
 import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
 import { useAuth } from '../context/AuthContext'
+
 const artistDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -104,9 +105,9 @@ const artistDetail = () => {
                 )}
               </div>
               <div className="flex items-center gap-3">
-                <button 
-                onClick={() => {user ? setIsReviewModalOpen(true) : navigate('/login')}}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
+                <button
+                  onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
                   <FaStar />
                   Add Review
                 </button>
@@ -345,13 +346,13 @@ const artistDetail = () => {
             </div>
           </div>
         )}
-         <ReviewModal 
-        isOpen={isReviewModalOpen} 
-        onClose={() => setIsReviewModalOpen(false)} 
-        itemName={artist?.name || 'this artist'} 
-        itemId={id} 
-        itemType="artist"
-      />
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          itemName={artist?.name || 'this artist'}
+          itemId={id}
+          itemType="artist"
+        />
       </main>
     </div>
   )
