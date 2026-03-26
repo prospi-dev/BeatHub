@@ -8,6 +8,7 @@ import AlbumCard from '../components/albumCard'
 import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
 import { useAuth } from '../context/AuthContext'
+import ReviewList from '../components/reviewList';
 
 const artistDetail = () => {
   const [loading, setLoading] = useState(true)
@@ -191,7 +192,7 @@ const artistDetail = () => {
           </div>
         </section>
       )}
-
+      <ReviewList itemId={id} itemType="artist" />
       {/* Artist Stats */}
       <section>
         <h2 className="text-2xl font-bold mb-4">About</h2>
@@ -291,6 +292,8 @@ const artistDetail = () => {
         return <AlbumsTab />
       case 'tracks':
         return <TracksTab />
+      case 'reviews': 
+        return <ReviewList itemId={id} />
       default:
         return <OverviewTab />
     }

@@ -7,6 +7,7 @@ import { IoMusicalNote } from 'react-icons/io5'
 import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
 import { useAuth } from '../context/AuthContext'
+import ReviewList from '../components/reviewList'
 const TrackDetail = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -145,12 +146,15 @@ const TrackDetail = () => {
                 </button>
             </div>
 
-            {/* Placeholder for reviews - you can implement actual review functionality later */}
-            <div className="text-center py-8">
-                <IoMusicalNote className="text-4xl text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 mb-2">No reviews yet</p>
-                <p className="text-gray-500 text-sm">Be the first to share your thoughts about this track!</p>
-            </div>
+            {ReviewList.length === 0 ? (
+                <div className="text-center p-12 bg-gray-800/50 rounded-2xl border border-gray-700/50">
+                    <p className="text-gray-400 mb-2">No reviews yet.</p>
+                    <p className="text-sm text-gray-500">Be the first to share your thoughts!</p>
+                </div>
+            ) : (
+                <ReviewList itemId={id} itemType="track" />
+            )}
+
         </div>
     )
 

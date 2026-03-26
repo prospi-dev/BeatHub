@@ -7,7 +7,7 @@ import { IoMusicalNote } from 'react-icons/io5'
 import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
 import { useAuth } from '../context/AuthContext'
-
+import ReviewList from '../components/reviewList'
 const albumDetail = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -228,7 +228,7 @@ const albumDetail = () => {
                         )}
                     </div>
                 </div>
-
+                <ReviewList itemId={id} itemType="album" />
                 {artistsDetails && artistsDetails.length > 0 && (
                     <div className="bg-gray-800 p-6 rounded-lg">
                         <h3 className="font-bold mb-4">Artists</h3>

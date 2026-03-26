@@ -8,3 +8,8 @@ export const updateReview = (id, data) =>
 
 export const deleteReview = (reviewId) =>
     axiosInstance.delete(`/reviews/${reviewId}`);
+
+export const getReviewsByItem = async (spotifyItemId) => {
+    const response = await axiosInstance.get(`/reviews/item/${spotifyItemId}`);
+    return response.data;
+}
