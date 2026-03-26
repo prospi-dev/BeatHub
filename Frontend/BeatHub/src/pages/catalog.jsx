@@ -3,11 +3,12 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'
 import BeatHubLogo from '../components/beatHubLogo.jsx'
 import { CiGrid41, CiFilter, CiSearch } from "react-icons/ci"
 import { IoClose, IoChevronDown } from "react-icons/io5"
-import { FaHeart, FaShare, FaStar } from "react-icons/fa"
+import { FaHeart, FaShare, FaStar, FaUser } from "react-icons/fa"
 import { getNewReleases, getPopularArtists, getTopTracks, search } from '../api/spotifyService.js'
 import AlbumCard from '../components/albumCard.jsx'
 import ArtistCard from '../components/artistCard.jsx'
 import TrackCard from '../components/trackCard.jsx'
+import { useAuth } from '../context/AuthContext'
 
 const catalog = () => {
     const location = useLocation()
@@ -15,6 +16,7 @@ const catalog = () => {
     const searchParams = new URLSearchParams(location.search)
     const type = searchParams.get('type') || 'albums'
     const searchQuery = searchParams.get('search') || ''
+    const { user, logout } = useAuth()
 
     // States
     const [data, setData] = useState([])
@@ -36,6 +38,11 @@ const catalog = () => {
             timeoutId = setTimeout(() => func(...args), delay)
         }
     }, [])
+
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
 
     const debouncedSearch = useCallback(
         debounce((query) => {
@@ -115,7 +122,7 @@ const catalog = () => {
                     return sorted.sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
                 }
                 return sorted
-            case 'date': 
+            case 'date':
                 if (type === 'albums') {
                     return sorted.sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
                 }
@@ -330,11 +337,13 @@ const catalog = () => {
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
             {/* Header */}
             <header className='sticky top-0 z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-700'>
-                <div className='flex items-center justify-between p-4'>
-                    <BeatHubLogo />
+                <div className='relative flex items-center p-4 min-h-[84px]'>
+                    <div className='shrink-0'>
+                        <BeatHubLogo />
+                    </div>
 
                     {/* Search Bar */}
-                    <div className='flex-1 max-w-md mx-4'>
+                    <div className='absolute left-1/2 -translate-x-1/2 max-w-3xs md:w-full lg:max-w-lg px-4'>
                         <div className='relative'>
                             <CiSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl' />
                             <input
@@ -356,37 +365,41 @@ const catalog = () => {
                     </div>
 
                     {/* Header Actions */}
-                    <div className='flex items-center gap-3'>
-                        {/* Slider */}
-                        <div className='hidden md:flex items-center gap-3'>
-                            <CiGrid41 className='text-lg text-gray-400' />
-                            <input
-                                type="range"
-                                min="3"
-                                max="8"
-                                value={gridColumns}
-                                onChange={(e) => setGridColumns(parseInt(e.target.value))}
-                                className='w-20 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider'
-                                title={`Grid columns: ${gridColumns}`}
-                            />
-                            <span className='text-sm text-gray-400 min-w-[8px]'>
-                                {gridColumns}
-                            </span>
-                        </div>
+                    <div className='flex items-center gap-3 ml-auto'>
+                        {user ? (
+                            <div className="flex items-center gap-4">
+                                <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
+                                    <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
+                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-4">
+                                <Link
+                                    to="/login"
+                                    className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
+                                >
+                                    Log In
+                                </Link>
 
-                        <button
-                            onClick={() => setShowFilters(!showFilters)}
-                            className={`p-2 rounded-lg transition-colors ${showFilters ? 'bg-orange-500 text-white' : 'bg-gray-800 hover:bg-gray-700'}`}
-                            title="Toggle filters"
-                        >
-                            <CiFilter className='text-xl' />
-                        </button>
+                                <Link
+                                    to="/register"
+                                    className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
+                                >
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
-
                 {/* Navigation Tabs */}
-                <nav className='border-t border-gray-700'>
-                    <div className='flex justify-center'>
+                <nav className='relative flex border-t border-gray-700 min-h-11'>
+                    <div className='absolute left-1/2 -translate-x-1/2 flex justify-center items-center'>
                         {['albums', 'artists', 'tracks'].map((tabType) => (
                             <Link
                                 key={tabType}
@@ -399,6 +412,30 @@ const catalog = () => {
                                 {tabType}
                             </Link>
                         ))}
+                    </div>
+
+                    <div className='hidden md:flex items-center gap-3 ml-auto mr-5'>
+                        <CiGrid41 className='text-lg text-gray-400' />
+                        <input
+                            type="range"
+                            min="3"
+                            max="8"
+                            value={gridColumns}
+                            onChange={(e) => setGridColumns(parseInt(e.target.value))}
+                            className='w-20 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider'
+                            title={`Grid columns: ${gridColumns}`}
+                        />
+                        <span className='text-sm text-gray-400 min-w-[8px]'>
+                            {gridColumns}
+                        </span>
+
+                        <button
+                            onClick={() => setShowFilters(!showFilters)}
+                            className={`p-2 rounded-lg transition-colors ${showFilters ? 'bg-orange-500 text-white' : 'bg-gray-800 hover:bg-gray-700'}`}
+                            title="Toggle filters"
+                        >
+                            <CiFilter className='text-xl' />
+                        </button>
                     </div>
                 </nav>
 
