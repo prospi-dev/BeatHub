@@ -87,7 +87,7 @@
   {
     "ContainingType": "BeatHub.Controllers.ReviewsController",
     "Method": "GetReviewsByItem",
-    "RelativePath": "api/Reviews/{Id}",
+    "RelativePath": "api/Reviews/item/{spotifyItemId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -95,11 +95,6 @@
       {
         "Name": "spotifyItemId",
         "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Id",
-        "Type": "",
         "IsRequired": true
       }
     ],

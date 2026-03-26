@@ -67,7 +67,7 @@
         }
       }
     },
-    "/api/Reviews/{Id}": {
+    "/api/Reviews/item/{spotifyItemId}": {
       "get": {
         "tags": [
           "Reviews"
@@ -75,13 +75,6 @@
         "parameters": [
           {
             "name": "spotifyItemId",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Id",
             "in": "path",
             "required": true,
             "schema": {
@@ -528,6 +521,10 @@
           },
           "comment": {
             "maxLength": 1000,
+            "type": "string",
+            "nullable": true
+          },
+          "itemType": {
             "type": "string",
             "nullable": true
           }

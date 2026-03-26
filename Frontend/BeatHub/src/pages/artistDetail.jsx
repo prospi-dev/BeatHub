@@ -6,7 +6,8 @@ import { FaHeart, FaShare, FaArrowLeft, FaStar } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
 import AlbumCard from '../components/albumCard'
 import { useColor } from 'color-thief-react'
-
+import ReviewModal from '../components/ReviewModal'
+import { useAuth } from '../context/AuthContext'
 const artistDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -16,7 +17,8 @@ const artistDetail = () => {
   const [activeTab, setActiveTab] = useState('overview')
   const { id } = useParams()
   const navigate = useNavigate()
-
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
+  const { user } = useAuth()
   const fetchData = async () => {
     try {
       setLoading(true)
@@ -71,13 +73,13 @@ const artistDetail = () => {
       crossOrigin: 'anonymous',
     });
 
-    const bgColor = dominantColor || '#1f2937'; 
+    const bgColor = dominantColor || '#1f2937';
 
     return (
       <div
         className="relative h-96 mb-8 transition-colors duration-1000"
         style={{
-          background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)` 
+          background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)`
         }}
       >
 
@@ -102,7 +104,9 @@ const artistDetail = () => {
                 )}
               </div>
               <div className="flex items-center gap-3">
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
+                <button 
+                onClick={() => {user ? setIsReviewModalOpen(true) : navigate('/login')}}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
                   <FaStar />
                   Add Review
                 </button>
@@ -341,6 +345,13 @@ const artistDetail = () => {
             </div>
           </div>
         )}
+         <ReviewModal 
+        isOpen={isReviewModalOpen} 
+        onClose={() => setIsReviewModalOpen(false)} 
+        itemName={artist?.name || 'this artist'} 
+        itemId={id} 
+        itemType="artist"
+      />
       </main>
     </div>
   )

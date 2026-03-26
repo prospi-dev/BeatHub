@@ -26,8 +26,8 @@ namespace BeatHub.Controllers
 
         /// Retrieves all reviews for a specific Spotify item.
         // GET: api/Reviews?spotifyItemId={spotifyItemId}
-        [HttpGet("{Id}")]
-        [AllowAnonymous] // Allow non-users to view reviews
+        [HttpGet("item/{spotifyItemId}")] 
+        [AllowAnonymous]
         public async Task<IActionResult> GetReviewsByItem(string spotifyItemId)
         {
             // Include user so we can see who made the review (its Username)
@@ -79,6 +79,7 @@ namespace BeatHub.Controllers
                 SpotifyItemId = reviewDto.SpotifyItemId,
                 Rating = reviewDto.Rating,
                 Comment = reviewDto.Comment,
+                ItemType = reviewDto.ItemType,
                 CreatedAt = DateTime.UtcNow
             };
 
