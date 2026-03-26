@@ -4,6 +4,7 @@ import { getTrackDetails, getMultipleArtistsDetails } from '../api/spotifyServic
 import BeatHubLogo from '../components/beatHubLogo'
 import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaMusic } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
+import { useColor } from 'color-thief-react'
 
 const TrackDetail = () => {
     const [loading, setLoading] = useState(true)
@@ -63,63 +64,69 @@ const TrackDetail = () => {
         </div>
     )
 
-    const HeroSection = () => (
-        <div className="relative h-96 mb-8">
-            {/* Background image with overlay */}
+    const HeroSection = () => {
+        const imageUrl = track.album?.images?.[0]?.url || '/default-track.png';
+
+        const { data: dominantColor, loading: colorLoading } = useColor(imageUrl, 'hex', {
+            crossOrigin: 'anonymous',
+        });
+
+        const bgColor = dominantColor || '#1f2937';
+
+        return (
             <div
-                className="absolute inset-0 bg-contain bg-center"
+                className="relative h-96 mb-8 transition-colors duration-1000"
                 style={{
-                    backgroundImage: `url(${track?.album?.images?.[0]?.url || '/default-track.png'})`,
+                    background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)`
                 }}
             >
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-gray-900/30"></div>
-            </div>
 
-            {/* Content */}
-            <div className="relative h-full flex items-end p-6">
-                <div className="flex items-end gap-6">
-                    <img
-                        src={track?.album?.images?.[0]?.url || '/default-track.png'}
-                        alt={track?.name}
-                        className="w-48 h-48 rounded-lg shadow-2xl hidden md:block"
-                    />
-                    <div className="mb-4">
-                        <p className="text-sm text-gray-300 mb-1">SONG</p>
-                        <h1 className="text-5xl font-bold mb-2">{track?.name}</h1>
-                        <div className="flex items-center gap-2 text-gray-300 mb-4">
-                            <span className="font-semibold">
-                                {track?.artists?.map(artist => artist.name).join(', ')}
-                            </span>
-                            <span>•</span>
-                            <span
-                                className="hover:text-white cursor-pointer transition-colors"
-                                onClick={() => navigate(`/album/${track?.album?.id}`)}
-                            >
-                                {track?.album?.name}
-                            </span>
-                            <span>•</span>
-                            <span>{new Date(track?.album?.release_date).getFullYear()}</span>
-                            <span>•</span>
-                            <span>{formatDuration(track?.duration_ms)}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                <FaStar />
-                                Add Review
-                            </button>
-                            <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                <FaHeart />
-                                Save
-                            </button>
-                            <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
-                                <FaShare />
-                            </button>
+                {/* Content */}
+                <div className="relative h-full flex items-end p-6">
+                    <div className="flex items-end gap-6">
+                        <img
+                            src={track?.album?.images?.[0]?.url || '/default-track.png'}
+                            alt={track?.name}
+                            className="w-48 h-48 rounded-lg shadow-2xl hidden md:block"
+                        />
+                        <div className="mb-4">
+                            <p className="text-sm text-gray-300 mb-1">SONG</p>
+                            <h1 className="text-5xl font-bold mb-2">{track?.name}</h1>
+                            <div className="flex items-center gap-2 text-gray-300 mb-4">
+                                <span className="font-semibold">
+                                    {track?.artists?.map(artist => artist.name).join(', ')}
+                                </span>
+                                <span>•</span>
+                                <span
+                                    className="hover:text-white cursor-pointer transition-colors"
+                                    onClick={() => navigate(`/album/${track?.album?.id}`)}
+                                >
+                                    {track?.album?.name}
+                                </span>
+                                <span>•</span>
+                                <span>{new Date(track?.album?.release_date).getFullYear()}</span>
+                                <span>•</span>
+                                <span>{formatDuration(track?.duration_ms)}</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
+                                    <FaStar />
+                                    Add Review
+                                </button>
+                                <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
+                                    <FaHeart />
+                                    Save
+                                </button>
+                                <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
+                                    <FaShare />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
 
     const ReviewsSection = () => (
         <div className="bg-gray-800 p-6 rounded-lg mb-8">

@@ -5,6 +5,8 @@ import BeatHubLogo from '../components/beatHubLogo'
 import { FaHeart, FaShare, FaArrowLeft, FaStar } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
 import AlbumCard from '../components/albumCard'
+import { useColor } from 'color-thief-react'
+
 const artistDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -61,55 +63,63 @@ const artistDetail = () => {
     </div>
   )
 
-  const HeroSection = () => (
-    <div className="relative h-96 mb-8">
-      {/* Background image with overlay */}
+  const HeroSection = () => {
+    const imageUrl = artist?.images?.[0]?.url || '/default-artist.png';
+
+
+    const { data: dominantColor, loading: colorLoading } = useColor(imageUrl, 'hex', {
+      crossOrigin: 'anonymous',
+    });
+
+    const bgColor = dominantColor || '#1f2937'; 
+
+    return (
       <div
-        className="absolute inset-0 bg-contain bg-center"
+        className="relative h-96 mb-8 transition-colors duration-1000"
         style={{
-          backgroundImage: `url(${artist?.images?.[0]?.url || '/default-artist.png'})`,
+          background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)` 
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-gray-900/30"></div>
-      </div>
 
-      {/* Content */}
-      <div className="relative h-full flex items-end p-8">
-        <div className="flex items-end gap-6">
-          <img
-            src={artist?.images?.[0]?.url || '/default-artist.png'}
-            alt={artist?.name}
-            className="w-48 h-48 rounded-full border-3 border-white shadow-2xl hidden md:block lg:block"
-          />
-          <div className="mb-4">
-            <h1 className="text-5xl font-bold mb-2">{artist?.name}</h1>
-            <div className="flex items-center gap-4 text-gray-300 mb-4">
-              <span>{formatFollowers(artist?.followers?.total)} followers</span>
-              {artist?.genres?.length > 0 && (
-                <>
-                  <span>•</span>
-                  <span>{artist.genres.slice(0, 3).join(', ')}</span>
-                </>
-              )}
-            </div>
-            <div className="flex items-center gap-3">
-              <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                <FaStar />
-                Add Review
-              </button>
-              <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                <FaHeart />
-                Follow
-              </button>
-              <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
-                <FaShare />
-              </button>
+        {/* Content */}
+        <div className="relative h-full flex items-end p-8">
+          <div className="flex items-end gap-6">
+            <img
+              src={imageUrl}
+              alt={artist?.name}
+              crossOrigin="anonymous"
+              className="w-48 h-48 rounded-full border-3 border-white shadow-2xl hidden md:block lg:block object-cover"
+            />
+            <div className="mb-4">
+              <h1 className="text-5xl font-bold mb-2 text-white">{artist?.name}</h1>
+              <div className="flex items-center gap-4 text-gray-300 mb-4 font-medium">
+                <span>{formatFollowers(artist?.followers?.total)} followers</span>
+                {artist?.genres?.length > 0 && (
+                  <>
+                    <span>•</span>
+                    <span className="capitalize">{artist.genres.slice(0, 3).join(', ')}</span>
+                  </>
+                )}
+              </div>
+              <div className="flex items-center gap-3">
+                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
+                  <FaStar />
+                  Add Review
+                </button>
+                <button className="border border-white/50 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors backdrop-blur-sm bg-black/10">
+                  <FaHeart />
+                  Follow
+                </button>
+                <button className="border border-white/50 hover:border-white text-white p-3 rounded-full transition-colors backdrop-blur-sm bg-black/10">
+                  <FaShare />
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   const TabNavigation = () => (
     <div className="border-b border-gray-700 mb-8">
