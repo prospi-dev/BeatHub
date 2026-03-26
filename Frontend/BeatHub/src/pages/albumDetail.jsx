@@ -153,7 +153,10 @@ const albumDetail = () => {
                                     <p
                                         key={artist.id}
                                         className="text-sm text-gray-400 hover:text-white hover:underline cursor-pointer"
-                                        onClick={() => navigate(`/artist/${artist.id}`)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/artist/${artist.id}`);
+                                        }}
                                     >
                                         {artist.name}
                                     </p>

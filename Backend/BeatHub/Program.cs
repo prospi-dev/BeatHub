@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -19,8 +19,6 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<SpotifyAuthService>();
 
 builder.Services.AddScoped<SpotifyApiService>();
-
-builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddCors(options => // So we can use the api from the frontend
 {

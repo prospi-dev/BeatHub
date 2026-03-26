@@ -115,7 +115,7 @@ const catalog = () => {
                     return sorted.sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
                 }
                 return sorted
-            case 'date': // Mantener compatibilidad con código existente
+            case 'date': 
                 if (type === 'albums') {
                     return sorted.sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
                 }
