@@ -184,7 +184,7 @@ const artistDetail = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-orange-500">{formatFollowers(artist?.followers?.total)}</div>
-              <div className="text-gray-400">Monthly Listeners</div>
+              <div className="text-gray-400">Followers</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-orange-500">{albums.length}</div>

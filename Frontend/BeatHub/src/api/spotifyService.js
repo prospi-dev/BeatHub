@@ -1,7 +1,7 @@
-import api from './axios';
+import api from './axiosInstance.jsx';
 
 export const getNewReleases = async (offset = 0) => {
-    const response = await api.get(`/new-releases?limit=20&offset=${offset}`);
+    const response = await api.get(`Spotify/new-releases?limit=20&offset=${offset}`);
     return response.data;
 };
 
@@ -24,7 +24,7 @@ export const search = async (query, type, offset = 0) => {
         throw new Error('Invalid search type')
     }
 
-    let searchUrl = `/search?q=${encodeURIComponent(query.trim())}&type=${spotifyType}&limit=20&offset=${offset}`
+    let searchUrl = `Spotify/search?q=${encodeURIComponent(query.trim())}&type=${spotifyType}&limit=20&offset=${offset}`
 
     if (spotifyType === 'album') {
         searchUrl += `&album_type=album`
@@ -36,7 +36,7 @@ export const search = async (query, type, offset = 0) => {
 
 export const getTrackDetails = async (trackId) => {
     try {
-        const trackResponse = await api.get(`/tracks/${trackId}`)
+        const trackResponse = await api.get(`Spotify/tracks/${trackId}`)
 
         return {
             track: trackResponse.data
@@ -66,7 +66,7 @@ export const getArtistsByGenres = async () => {
 
     try {
         const searchPromises = genres.map(genre =>
-            api.get(`/search?q=genre:${genre}&type=artist`)
+            api.get(`Spotify/search?q=genre:${genre}&type=artist`)
         )
 
         const results = await Promise.all(searchPromises)
@@ -92,8 +92,8 @@ export const getArtistsByGenres = async () => {
 export const getAlbumDetails = async (albumId) => {
     try {
         const [albumResponse, tracksResponse] = await Promise.all([
-            api.get(`/albums/${albumId}`),
-            api.get(`/albums/${albumId}/tracks`)
+            api.get(`Spotify/albums/${albumId}`),
+            api.get(`Spotify/albums/${albumId}/tracks`)
         ])
 
         return {
@@ -142,9 +142,9 @@ export const getPopularArtists = async (offset = 0) => {
 export const getArtistsDetails = async (artistId) => {
     try {
         const [artistResponse, topTracksResponse, albumsResponse] = await Promise.all([
-            api.get(`/artists/${artistId}`),
-            api.get(`/artists/${artistId}/top-tracks`),
-            api.get(`/artists/${artistId}/albums`)
+            api.get(`Spotify/artists/${artistId}`),
+            api.get(`Spotify/artists/${artistId}/top-tracks`),
+            api.get(`Spotify/artists/${artistId}/albums`)
         ])
 
         return {
@@ -160,7 +160,7 @@ export const getArtistsDetails = async (artistId) => {
 
 export const getMultipleArtistsDetails = async (artistIds) => {
     try {
-        const artistPromises = artistIds.map(id => api.get(`/artists/${id}`))
+        const artistPromises = artistIds.map(id => api.get(`Spotify/artists/${id}`))
         const results = await Promise.all(artistPromises)
         return results.map(result => result.data)
     } catch (error) {
@@ -197,7 +197,7 @@ export const getTopTracks = async (offset = 0) => {
         
         // Get one track from each album
         const trackPromises = albums.map(album =>
-            api.get(`/albums/${album.id}/tracks?limit=1`)
+            api.get(`Spotify/albums/${album.id}/tracks?limit=1`)
         )
 
         const results = await Promise.all(trackPromises)
