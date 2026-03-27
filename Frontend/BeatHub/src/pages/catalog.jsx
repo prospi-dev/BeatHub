@@ -8,7 +8,9 @@ import { getNewReleases, getPopularArtists, getTopTracks, search } from '../api/
 import AlbumCard from '../components/albumCard.jsx'
 import ArtistCard from '../components/artistCard.jsx'
 import TrackCard from '../components/trackCard.jsx'
-import { useAuth } from '../context/AuthContext'
+import { useAppAuth } from '../hooks/useAppAuth.js'
+import Footer from '../components/footer.jsx'
+import LoadingSpinner from '../components/loadingSpinner.jsx'
 
 const catalog = () => {
     const location = useLocation()
@@ -16,7 +18,7 @@ const catalog = () => {
     const searchParams = new URLSearchParams(location.search)
     const type = searchParams.get('type') || 'albums'
     const searchQuery = searchParams.get('search') || ''
-    const { user, logout } = useAuth()
+    const { user, handleLogout } = useAppAuth()
 
     // States
     const [data, setData] = useState([])
@@ -30,6 +32,7 @@ const catalog = () => {
     const [hasMore, setHasMore] = useState(true)
     const [loadingMore, setLoadingMore] = useState(false)
     const [gridColumns, setGridColumns] = useState(4) // Number of columns (3-8)
+
     // Debounced search function
     const debounce = useCallback((func, delay) => {
         let timeoutId
@@ -39,10 +42,6 @@ const catalog = () => {
         }
     }, [])
 
-    const handleLogout = () => {
-        logout()
-        navigate('/login')
-    }
 
     const debouncedSearch = useCallback(
         debounce((query) => {
@@ -303,12 +302,6 @@ const catalog = () => {
             </div>
         )
     }
-    const LoadingSpinner = () => (
-        <div className="flex items-center justify-center p-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-            <span className="ml-3 text-gray-400">Loading {type}...</span>
-        </div>
-    )
 
     const EmptyState = () => (
         <div className="text-center py-16">
@@ -475,7 +468,7 @@ const catalog = () => {
             {/* Main Content */}
             <main className='container mx-auto px-4 py-6'>
                 {loading ? (
-                    <LoadingSpinner />
+                    <LoadingSpinner message={`Loading ${type}...`} />
                 ) : error ? (
                     <div className="text-center py-16">
                         <div className="text-red-500 text-xl mb-4">{error}</div>
@@ -517,6 +510,7 @@ const catalog = () => {
                     </>
                 )}
             </main>
+            <Footer />
         </div>
     )
 }

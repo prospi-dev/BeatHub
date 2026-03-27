@@ -7,8 +7,10 @@ import { IoMusicalNote } from 'react-icons/io5'
 import AlbumCard from '../components/albumCard'
 import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
-import { useAuth } from '../context/AuthContext'
 import ReviewList from '../components/reviewList';
+import { useAppAuth } from '../hooks/useAppAuth.js'
+import LoadingSpinner from '../components/loadingSpinner.jsx'
+import HeroSection from '../components/heroSection.jsx'
 
 const artistDetail = () => {
   const [loading, setLoading] = useState(true)
@@ -18,9 +20,11 @@ const artistDetail = () => {
   const [albums, setAlbums] = useState([])
   const [activeTab, setActiveTab] = useState('overview')
   const { id } = useParams()
+  const [existingUserReview, setExistingUserReview] = useState(null)
   const navigate = useNavigate()
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
-  const { user } = useAuth()
+  const { user, handleLogout } = useAppAuth()
+
   const fetchData = async () => {
     try {
       setLoading(true)
@@ -44,10 +48,7 @@ const artistDetail = () => {
     }
   }, [id])
 
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
+
   const formatDuration = (durationMs) => {
     const minutes = Math.floor(durationMs / 60000)
     const seconds = Math.floor((durationMs % 60000) / 1000)
@@ -61,73 +62,6 @@ const artistDetail = () => {
       return `${(followers / 1000).toFixed(1)}K`
     }
     return followers?.toLocaleString() || '0'
-  }
-
-  const LoadingSpinner = () => (
-    <div className="flex items-center justify-center p-8">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-      <span className="ml-3 text-gray-400">Loading artist...</span>
-    </div>
-  )
-
-  const HeroSection = () => {
-    const imageUrl = artist?.images?.[0]?.url || '/default-artist.png';
-
-
-    const { data: dominantColor, loading: colorLoading } = useColor(imageUrl, 'hex', {
-      crossOrigin: 'anonymous',
-    });
-
-    const bgColor = dominantColor || '#1f2937';
-
-    return (
-      <div
-        className="relative h-96 mb-8 transition-colors duration-1000"
-        style={{
-          background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)`
-        }}
-      >
-
-        {/* Content */}
-        <div className="relative h-full flex items-end p-8">
-          <div className="flex items-end gap-6">
-            <img
-              src={imageUrl}
-              alt={artist?.name}
-              crossOrigin="anonymous"
-              className="w-48 h-48 rounded-full border-3 border-white shadow-2xl hidden md:block lg:block object-cover"
-            />
-            <div className="mb-4">
-              <h1 className="text-5xl font-bold mb-2 text-white">{artist?.name}</h1>
-              <div className="flex items-center gap-4 text-gray-300 mb-4 font-medium">
-                <span>{formatFollowers(artist?.followers?.total)} followers</span>
-                {artist?.genres?.length > 0 && (
-                  <>
-                    <span>•</span>
-                    <span className="capitalize">{artist.genres.slice(0, 3).join(', ')}</span>
-                  </>
-                )}
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
-                  <FaStar />
-                  Add Review
-                </button>
-                <button className="border border-white/50 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors backdrop-blur-sm bg-black/10">
-                  <FaHeart />
-                  Follow
-                </button>
-                <button className="border border-white/50 hover:border-white text-white p-3 rounded-full transition-colors backdrop-blur-sm bg-black/10">
-                  <FaShare />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   const TabNavigation = () => (
@@ -352,7 +286,7 @@ const artistDetail = () => {
       <main>
         {loading ? (
           <div className="container mx-auto px-4 py-8">
-            <LoadingSpinner />
+            <LoadingSpinner message='Loading artist...' />
           </div>
         ) : error ? (
           <div className="container mx-auto px-4 py-8">
@@ -368,7 +302,26 @@ const artistDetail = () => {
           </div>
         ) : artist ? (
           <>
-            <HeroSection />
+            <HeroSection
+              type={artist?.album_type || 'artist'}
+              title={artist?.name}
+              imageUrl={artist?.images?.[0]?.url}
+              subtitleInfo={
+                <>
+                  <div className="flex items-center gap-4 text-gray-300 mb-4 font-medium">
+                    <span>{formatFollowers(artist?.followers?.total)} followers</span>
+                    {artist?.genres?.length > 0 && (
+                      <>
+                        <span>•</span>
+                        <span className="capitalize">{artist.genres.slice(0, 3).join(', ')}</span>
+                      </>
+                    )}
+                  </div>
+                </>
+              }
+              existingUserReview={existingUserReview}
+              onReviewClick={() => setIsReviewModalOpen(true)}
+            />
             <div className="container mx-auto px-4 pb-8">
               <TabNavigation />
               {renderTabContent()}

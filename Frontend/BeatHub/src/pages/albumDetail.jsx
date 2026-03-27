@@ -6,9 +6,11 @@ import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaUser } from 'react-ic
 import { IoMusicalNote } from 'react-icons/io5'
 import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
-import { useAuth } from '../context/AuthContext'
 import ReviewList from '../components/reviewList'
-
+import { useAppAuth } from '../hooks/useAppAuth'
+import Footer from '../components/footer'
+import LoadingSpinner from '../components/loadingSpinner'
+import HeroSection from '../components/heroSection'
 
 const albumDetail = () => {
     const [loading, setLoading] = useState(true)
@@ -20,7 +22,8 @@ const albumDetail = () => {
     const [artistsDetails, setArtistsDetails] = useState([])
     const { id } = useParams()
     const navigate = useNavigate()
-    const { user } = useAuth()
+    const { user, handleLogout } = useAppAuth()
+
     const fetchData = async () => {
         try {
             setLoading(true)
@@ -73,84 +76,6 @@ const albumDetail = () => {
             month: 'long',
             day: 'numeric'
         })
-    }
-
-    const LoadingSpinner = () => (
-        <div className="flex items-center justify-center p-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-            <span className="ml-3 text-gray-400">Loading album...</span>
-        </div>
-    )
-    const handleLogout = () => {
-        logout()
-        navigate('/login')
-    }
-    const HeroSection = () => {
-
-        const imageUrl = album?.images?.[0]?.url || '/default-album.png';
-
-        const { data: dominantColor, loading: colorLoading } = useColor(imageUrl, 'hex', {
-            crossOrigin: 'anonymous',
-        });
-
-        const bgColor = dominantColor || '#1f2937';
-
-        return (
-            <div
-                className="relative h-96 mb-8 transition-colors duration-1000"
-                style={{
-                    background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)`
-                }}
-            >
-                {/* Content */}
-                <div className="relative h-full flex items-end p-8">
-                    <div className="flex items-end gap-6">
-                        <img
-                            src={album?.images?.[0]?.url || '/default-album.png'}
-                            alt={album?.name}
-                            className="w-48 h-48 rounded-lg shadow-2xl hidden md:block"
-                        />
-                        <div className="mb-4">
-                            <p className="text-sm text-gray-300 mb-1">
-                                {album?.album_type?.toUpperCase() || 'ALBUM'}
-                            </p>
-                            <h1 className="text-5xl font-bold mb-2">{album?.name}</h1>
-                            <div className="flex items-center gap-2 text-gray-300 mb-4">
-                                <span className="font-semibold">
-                                    {album?.artists?.map(artist => artist.name).join(', ')}
-                                </span>
-                                <span>•</span>
-                                <span>{new Date(album?.release_date).getFullYear()}</span>
-                                <span>•</span>
-                                <span>{album?.total_tracks} tracks</span>
-                                <span>•</span>
-                                <span>{getTotalDuration()}</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
-                                    className={`${
-                                        existingUserReview 
-                                            ? 'bg-gray-700 hover:bg-gray-600 border border-gray-500' 
-                                            : 'bg-orange-500 hover:bg-orange-600'
-                                    } text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg`}
-                                >
-                                    <FaStar className={existingUserReview ? 'text-orange-500' : ''} />
-                                    {existingUserReview ? 'Edit Review' : 'Add Review'}
-                                </button>
-                                <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                    <FaHeart />
-                                    Save
-                                </button>
-                                <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
-                                    <FaShare />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
     }
 
     const TrackList = () => (
@@ -330,7 +255,7 @@ const albumDetail = () => {
             <main>
                 {loading ? (
                     <div className="container mx-auto px-4 py-8">
-                        <LoadingSpinner />
+                        <LoadingSpinner message='Loading album...' />
                     </div>
                 ) : error ? (
                     <div className="container mx-auto px-4 py-8">
@@ -346,7 +271,27 @@ const albumDetail = () => {
                     </div>
                 ) : album ? (
                     <>
-                        <HeroSection />
+                        <HeroSection
+                            type={album?.album_type || 'album'}
+                            title={album?.name}
+                            imageUrl={album?.images?.[0]?.url}
+                            subtitleInfo={
+                                <>
+                                    <span className="font-bold text-white hover:underline cursor-pointer">
+                                        {album?.artists?.map(artist => artist.name).join(', ')}
+                                    </span>
+                                    <span>•</span>
+                                    <span>{new Date(album?.release_date).getFullYear()}</span>
+                                    <span>•</span>
+                                    <span>{album?.total_tracks} tracks</span>
+                                    <span>•</span>
+                                    <span className="text-gray-400">{getTotalDuration()}</span>
+                                </>
+                            }
+                            existingUserReview={existingUserReview} 
+                            onReviewClick={() => setIsReviewModalOpen(true)}
+                        />
+
                         <div className="container mx-auto px-4 pb-8">
                             <AlbumInfo />
                         </div>
@@ -368,6 +313,7 @@ const albumDetail = () => {
                     itemType="album"
                 />
             </main>
+            <Footer />
         </div>
     )
 }

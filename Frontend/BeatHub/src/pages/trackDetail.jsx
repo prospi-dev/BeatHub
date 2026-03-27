@@ -8,7 +8,10 @@ import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
 import { useAuth } from '../context/AuthContext'
 import ReviewList from '../components/reviewList'
-
+import { useAppAuth } from '../hooks/useAppAuth.js'
+import Footer from '../components/footer'
+import LoadingSpinner from '../components/loadingSpinner.jsx'
+import HeroSection from '../components/heroSection.jsx'
 
 const TrackDetail = () => {
     const [loading, setLoading] = useState(true)
@@ -16,7 +19,8 @@ const TrackDetail = () => {
     const [track, setTrack] = useState(null)
     const [artistsDetails, setArtistsDetails] = useState([])
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
-    const { user } = useAuth()
+    const [existingUserReview, setExistingUserReview] = useState(null)
+    const { user, handleLogout } = useAppAuth()
     const { id } = useParams()
     const navigate = useNavigate()
 
@@ -54,10 +58,6 @@ const TrackDetail = () => {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`
     }
 
-    const handleLogout = () => {
-        logout()
-        navigate('/login')
-    }
 
     const formatReleaseDate = (dateString) => {
         const date = new Date(dateString)
@@ -66,79 +66,6 @@ const TrackDetail = () => {
             month: 'long',
             day: 'numeric'
         })
-    }
-
-    const LoadingSpinner = () => (
-        <div className="flex items-center justify-center p-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-            <span className="ml-3 text-gray-400">Loading track...</span>
-        </div>
-    )
-
-    const HeroSection = () => {
-        const imageUrl = track.album?.images?.[0]?.url || '/default-track.png';
-
-        const { data: dominantColor, loading: colorLoading } = useColor(imageUrl, 'hex', {
-            crossOrigin: 'anonymous',
-        });
-
-        const bgColor = dominantColor || '#1f2937';
-
-        return (
-            <div
-                className="relative h-96 mb-8 transition-colors duration-1000"
-                style={{
-                    background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)`
-                }}
-            >
-
-                {/* Content */}
-                <div className="relative h-full flex items-end p-6">
-                    <div className="flex items-end gap-6">
-                        <img
-                            src={track?.album?.images?.[0]?.url || '/default-track.png'}
-                            alt={track?.name}
-                            className="w-48 h-48 rounded-lg shadow-2xl hidden md:block"
-                        />
-                        <div className="mb-4">
-                            <p className="text-sm text-gray-300 mb-1">SONG</p>
-                            <h1 className="text-5xl font-bold mb-2">{track?.name}</h1>
-                            <div className="flex items-center gap-2 text-gray-300 mb-4">
-                                <span className="font-semibold">
-                                    {track?.artists?.map(artist => artist.name).join(', ')}
-                                </span>
-                                <span>•</span>
-                                <span
-                                    className="hover:text-white cursor-pointer transition-colors"
-                                    onClick={() => navigate(`/album/${track?.album?.id}`)}
-                                >
-                                    {track?.album?.name}
-                                </span>
-                                <span>•</span>
-                                <span>{new Date(track?.album?.release_date).getFullYear()}</span>
-                                <span>•</span>
-                                <span>{formatDuration(track?.duration_ms)}</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
-                                    <FaStar />
-                                    Add Review
-                                </button>
-                                <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                    <FaHeart />
-                                    Save
-                                </button>
-                                <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
-                                    <FaShare />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
     }
 
     const ReviewsSection = () => (
@@ -296,44 +223,44 @@ const TrackDetail = () => {
                         <BeatHubLogo />
                     </div>
                     <div className='flex items-center gap-3 ml-auto'>
-                    {user ? (
-                        <div className="flex items-center gap-4">
-                            <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
-                                <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
-                            </Link>
-                            <button
-                                onClick={handleLogout}
-                                className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
-                            >
-                                Logout
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="flex items-center gap-4">
-                            <Link
-                                to="/login"
-                                className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
-                            >
-                                Log In
-                            </Link>
+                        {user ? (
+                            <div className="flex items-center gap-4">
+                                <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
+                                    <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
+                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-4">
+                                <Link
+                                    to="/login"
+                                    className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
+                                >
+                                    Log In
+                                </Link>
 
-                            <Link
-                                to="/register"
-                                className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
-                            >
-                                Sign Up
-                            </Link>
-                        </div>
-                    )}
+                                <Link
+                                    to="/register"
+                                    className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
+                                >
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                </div>
-            
+
             </header>
 
             <main>
                 {loading ? (
                     <div className="container mx-auto px-4 py-8">
-                        <LoadingSpinner />
+                        <LoadingSpinner message='Loading track...' />
                     </div>
                 ) : error ? (
                     <div className="container mx-auto px-4 py-8">
@@ -349,7 +276,33 @@ const TrackDetail = () => {
                     </div>
                 ) : track ? (
                     <>
-                        <HeroSection />
+                        <HeroSection
+                            type={track?.album?.album_type || 'track'}
+                            title={track?.name}
+                            imageUrl={track?.album?.images?.[0]?.url}
+                            subtitleInfo={
+                                <>
+                                    <div className="flex items-center gap-2 text-gray-300 mb-4">
+                                        <span className="font-semibold">
+                                            {track?.artists?.map(artist => artist.name).join(', ')}
+                                        </span>
+                                        <span>•</span>
+                                        <span
+                                            className="hover:text-white cursor-pointer transition-colors"
+                                            onClick={() => navigate(`/album/${track?.album?.id}`)}
+                                        >
+                                            {track?.album?.name}
+                                        </span>
+                                        <span>•</span>
+                                        <span>{new Date(track?.album?.release_date).getFullYear()}</span>
+                                        <span>•</span>
+                                        <span>{formatDuration(track?.duration_ms)}</span>
+                                    </div>
+                                </>
+                            }
+                            existingUserReview={existingUserReview}
+                            onReviewClick={() => setIsReviewModalOpen(true)}
+                        />
                         <div className="container mx-auto px-4 pb-8">
                             <TrackInfo />
                         </div>
@@ -371,6 +324,7 @@ const TrackDetail = () => {
                     itemType="track"
                 />
             </main>
+            <Footer />
         </div>
     )
 }
