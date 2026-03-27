@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import BeatHubLogo from './beatHubLogo';
+import BeatHubLogo from '../common/BeatHubLogo';
 import { FaArrowLeft, FaUser } from 'react-icons/fa';
-import { useAppAuth } from '../hooks/useAppAuth';
+import { useAppAuth } from '../../hooks/useAppAuth';
 
 const Header = ({ 
     showBackButton = false, 

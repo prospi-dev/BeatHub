@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaHeart, FaShare, FaStar } from 'react-icons/fa'
-import { useAppAuth } from '../hooks/useAppAuth'
+import { useAppAuth } from '../../hooks/useAppAuth'
 import { useColor } from 'color-thief-react'
 
 const HeroSection = ({ 

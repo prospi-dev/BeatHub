@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaStar, FaTimes, FaSpinner } from 'react-icons/fa';
-import { createReview } from '../api/reviews'
+import { createReview } from '../../api/reviews'
 
 const ReviewModal = ({ isOpen, onClose, itemName, itemId, itemType, existingReview, onReviewSuccess }) => {
     const [rating, setRating] = useState(0);

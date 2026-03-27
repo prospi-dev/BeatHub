@@ -1,16 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import React, { useState, useEffect, useCallback } from 'react'
-import { getArtistsDetails } from '../api/spotifyService'
+import { getArtistsDetails } from '../api/spotifyService.js'
 import { FaHeart, FaStar } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
-import { formatDuration } from '../utils/utils';
+import { formatDuration } from '../utils/utils.js';
 
-import AlbumCard from '../components/albumCard'
-import ReviewModal from '../components/reviewModal.jsx'
-import ReviewList from '../components/reviewList';
-import LoadingSpinner from '../components/loadingSpinner.jsx'
-import HeroSection from '../components/heroSection.jsx'
-import Header from '../components/header.jsx'
+import AlbumCard from '../components/cards/AlbumCard.jsx'
+import ReviewModal from '../components/reviews/ReviewModal.jsx'
+import ReviewList from '../components/reviews/ReviewList.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
+import HeroSection from '../components/layout/HeroSection.jsx'
+import Header from '../components/layout/Header.jsx'
 
 const artistDetail = () => {
   const [loading, setLoading] = useState(true)

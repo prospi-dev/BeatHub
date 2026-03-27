@@ -3,12 +3,12 @@ import React, { useState, useEffect } from 'react'
 import { getTrackDetails, getMultipleArtistsDetails } from '../api/spotifyService'
 import { IoMusicalNote } from 'react-icons/io5'
 
-import Header from '../components/header'
-import ReviewModal from '../components/reviewModal'
-import ReviewList from '../components/reviewList'
-import Footer from '../components/footer'
-import LoadingSpinner from '../components/loadingSpinner'
-import HeroSection from '../components/heroSection'
+import Header from '../components/layout/Header'
+import ReviewModal from '../components/reviews/ReviewModal'
+import ReviewList from '../components/reviews/ReviewList'
+import Footer from '../components/layout/Footer'
+import LoadingSpinner from '../components/common/LoadingSpinner'
+import HeroSection from '../components/layout/HeroSection'
 
 import { formatDuration, formatReleaseDate } from '../utils/utils'
 

@@ -3,13 +3,13 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { CiGrid41, CiFilter, CiSearch } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
 
-import AlbumCard from '../components/albumCard.jsx';
-import ArtistCard from '../components/artistCard.jsx';
-import TrackCard from '../components/trackCard.jsx';
-import Footer from '../components/footer.jsx';
-import LoadingSpinner from '../components/loadingSpinner.jsx';
-import Header from '../components/header.jsx';
-import { useCatalogData } from '../hooks/useCatalogData';
+import AlbumCard from '../components/cards/AlbumCard.jsx';
+import ArtistCard from '../components/cards/ArtistCard.jsx';
+import TrackCard from '../components/cards/TrackCard.jsx';
+import Footer from '../components/layout/Footer.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
+import Header from '../components/layout/Header.jsx';
+import { useCatalogData } from '../hooks/useCatalogData.js';
 
 const EmptyState = ({ type, searchQuery, handleClearSearch }) => (
     <div className="text-center py-16">

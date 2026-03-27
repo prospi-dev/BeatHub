@@ -5,8 +5,8 @@ import { HiMusicNote } from "react-icons/hi";
 import { useNavigate } from 'react-router-dom';
 
 import React from 'react'
-import BeatHubLogo from '../components/beatHubLogo'
-import Footer from '../components/footer.jsx';
+import BeatHubLogo from '../components/common/BeatHubLogo.jsx'
+import Footer from '../components/layout/Footer.jsx';
 
 const Home = () => {
     const navigate = useNavigate();

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaStar, FaTimes, FaUserCircle } from 'react-icons/fa';
-import { getReviewsByItem } from '../api/reviews';
+import { getReviewsByItem } from '../../api/reviews';
 import ReviewCard from './ReviewCard';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => {
     const [reviews, setReviews] = useState([]);
