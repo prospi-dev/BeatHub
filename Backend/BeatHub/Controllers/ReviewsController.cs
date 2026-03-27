@@ -42,7 +42,8 @@ namespace BeatHub.Controllers
                     r.Comment,
                     r.CreatedAt,
                     r.ItemType,
-                    Username = r.User.Username // Only display username (not the whole user)
+                    Username = r.User.Username,
+                    Email = r.User.Email
                 })
                 .ToListAsync();
 
