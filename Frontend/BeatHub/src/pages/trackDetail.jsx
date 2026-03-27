@@ -1,15 +1,22 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import { getTrackDetails, getMultipleArtistsDetails } from '../api/spotifyService'
 import BeatHubLogo from '../components/beatHubLogo'
-import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaMusic } from 'react-icons/fa'
+import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaMusic, FaUser } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
+import { useColor } from 'color-thief-react'
+import ReviewModal from '../components/ReviewModal'
+import { useAuth } from '../context/AuthContext'
+import ReviewList from '../components/reviewList'
+
 
 const TrackDetail = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [track, setTrack] = useState(null)
-    const [artistsDetails, setArtistsDetails] = useState([]) // Nuevo estado
+    const [artistsDetails, setArtistsDetails] = useState([])
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
+    const { user } = useAuth()
     const { id } = useParams()
     const navigate = useNavigate()
 
@@ -47,6 +54,11 @@ const TrackDetail = () => {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`
     }
 
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
+
     const formatReleaseDate = (dateString) => {
         const date = new Date(dateString)
         return date.toLocaleDateString('en-US', {
@@ -63,80 +75,83 @@ const TrackDetail = () => {
         </div>
     )
 
-    const HeroSection = () => (
-        <div className="relative h-96 mb-8">
-            {/* Background image with overlay */}
+    const HeroSection = () => {
+        const imageUrl = track.album?.images?.[0]?.url || '/default-track.png';
+
+        const { data: dominantColor, loading: colorLoading } = useColor(imageUrl, 'hex', {
+            crossOrigin: 'anonymous',
+        });
+
+        const bgColor = dominantColor || '#1f2937';
+
+        return (
             <div
-                className="absolute inset-0 bg-contain bg-center"
+                className="relative h-96 mb-8 transition-colors duration-1000"
                 style={{
-                    backgroundImage: `url(${track?.album?.images?.[0]?.url || '/default-track.png'})`,
+                    background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)`
                 }}
             >
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-gray-900/30"></div>
-            </div>
 
-            {/* Content */}
-            <div className="relative h-full flex items-end p-6">
-                <div className="flex items-end gap-6">
-                    <img
-                        src={track?.album?.images?.[0]?.url || '/default-track.png'}
-                        alt={track?.name}
-                        className="w-48 h-48 rounded-lg shadow-2xl hidden md:block"
-                    />
-                    <div className="mb-4">
-                        <p className="text-sm text-gray-300 mb-1">SONG</p>
-                        <h1 className="text-5xl font-bold mb-2">{track?.name}</h1>
-                        <div className="flex items-center gap-2 text-gray-300 mb-4">
-                            <span className="font-semibold">
-                                {track?.artists?.map(artist => artist.name).join(', ')}
-                            </span>
-                            <span>•</span>
-                            <span
-                                className="hover:text-white cursor-pointer transition-colors"
-                                onClick={() => navigate(`/album/${track?.album?.id}`)}
-                            >
-                                {track?.album?.name}
-                            </span>
-                            <span>•</span>
-                            <span>{new Date(track?.album?.release_date).getFullYear()}</span>
-                            <span>•</span>
-                            <span>{formatDuration(track?.duration_ms)}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                <FaStar />
-                                Add Review
-                            </button>
-                            <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                <FaHeart />
-                                Save
-                            </button>
-                            <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
-                                <FaShare />
-                            </button>
+                {/* Content */}
+                <div className="relative h-full flex items-end p-6">
+                    <div className="flex items-end gap-6">
+                        <img
+                            src={track?.album?.images?.[0]?.url || '/default-track.png'}
+                            alt={track?.name}
+                            className="w-48 h-48 rounded-lg shadow-2xl hidden md:block"
+                        />
+                        <div className="mb-4">
+                            <p className="text-sm text-gray-300 mb-1">SONG</p>
+                            <h1 className="text-5xl font-bold mb-2">{track?.name}</h1>
+                            <div className="flex items-center gap-2 text-gray-300 mb-4">
+                                <span className="font-semibold">
+                                    {track?.artists?.map(artist => artist.name).join(', ')}
+                                </span>
+                                <span>•</span>
+                                <span
+                                    className="hover:text-white cursor-pointer transition-colors"
+                                    onClick={() => navigate(`/album/${track?.album?.id}`)}
+                                >
+                                    {track?.album?.name}
+                                </span>
+                                <span>•</span>
+                                <span>{new Date(track?.album?.release_date).getFullYear()}</span>
+                                <span>•</span>
+                                <span>{formatDuration(track?.duration_ms)}</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
+                                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
+                                    <FaStar />
+                                    Add Review
+                                </button>
+                                <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
+                                    <FaHeart />
+                                    Save
+                                </button>
+                                <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
+                                    <FaShare />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
 
     const ReviewsSection = () => (
         <div className="bg-gray-800 p-6 rounded-lg mb-8">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Reviews</h2>
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 transition-colors">
-                    <FaStar />
-                    Write Review
-                </button>
-            </div>
+            {ReviewList.length === 0 ? (
+                <div className="text-center p-12 bg-gray-800/50 rounded-2xl border border-gray-700/50">
+                    <p className="text-gray-400 mb-2">No reviews yet.</p>
+                    <p className="text-sm text-gray-500">Be the first to share your thoughts!</p>
+                </div>
+            ) : (
+                <ReviewList itemId={id} itemType="album" />
+            )}
 
-            {/* Placeholder for reviews - you can implement actual review functionality later */}
-            <div className="text-center py-8">
-                <IoMusicalNote className="text-4xl text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 mb-2">No reviews yet</p>
-                <p className="text-gray-500 text-sm">Be the first to share your thoughts about this track!</p>
-            </div>
         </div>
     )
 
@@ -280,7 +295,39 @@ const TrackDetail = () => {
                         </button>
                         <BeatHubLogo />
                     </div>
+                    <div className='flex items-center gap-3 ml-auto'>
+                    {user ? (
+                        <div className="flex items-center gap-4">
+                            <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
+                                <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-4">
+                            <Link
+                                to="/login"
+                                className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
+                            >
+                                Log In
+                            </Link>
+
+                            <Link
+                                to="/register"
+                                className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
+                    )}
                 </div>
+                </div>
+            
             </header>
 
             <main>
@@ -316,6 +363,13 @@ const TrackDetail = () => {
                         </div>
                     </div>
                 )}
+                <ReviewModal
+                    isOpen={isReviewModalOpen}
+                    onClose={() => setIsReviewModalOpen(false)}
+                    itemName={track?.name || 'this track'}
+                    itemId={id}
+                    itemType="track"
+                />
             </main>
         </div>
     )

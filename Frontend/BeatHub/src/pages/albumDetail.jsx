@@ -1,19 +1,25 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import { getAlbumDetails, getMultipleArtistsDetails } from '../api/spotifyService'
 import BeatHubLogo from '../components/beatHubLogo'
-import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock } from 'react-icons/fa'
+import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaUser } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
+import { useColor } from 'color-thief-react'
+import ReviewModal from '../components/ReviewModal'
+import { useAuth } from '../context/AuthContext'
+import ReviewList from '../components/reviewList'
+
 
 const albumDetail = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [album, setAlbum] = useState(null)
     const [tracks, setTracks] = useState([])
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
     const [artistsDetails, setArtistsDetails] = useState([])
     const { id } = useParams()
     const navigate = useNavigate()
-
+    const { user } = useAuth()
     const fetchData = async () => {
         try {
             setLoading(true)
@@ -74,61 +80,72 @@ const albumDetail = () => {
             <span className="ml-3 text-gray-400">Loading album...</span>
         </div>
     )
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
+    const HeroSection = () => {
 
-    const HeroSection = () => (
-        <div className="relative h-96 mb-8">
-            {/* Background image with overlay */}
+        const imageUrl = album?.images?.[0]?.url || '/default-album.png';
+
+        const { data: dominantColor, loading: colorLoading } = useColor(imageUrl, 'hex', {
+            crossOrigin: 'anonymous',
+        });
+
+        const bgColor = dominantColor || '#1f2937';
+
+        return (
             <div
-                className="absolute inset-0 bg-contain bg-center"
+                className="relative h-96 mb-8 transition-colors duration-1000"
                 style={{
-                    backgroundImage: `url(${album?.images?.[0]?.url || '/default-album.png'})`,
+                    background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)`
                 }}
             >
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-gray-900/30"></div>
-            </div>
-
-            {/* Content */}
-            <div className="relative h-full flex items-end p-8">
-                <div className="flex items-end gap-6">
-                    <img
-                        src={album?.images?.[0]?.url || '/default-album.png'}
-                        alt={album?.name}
-                        className="w-48 h-48 rounded-lg shadow-2xl hidden md:block"
-                    />
-                    <div className="mb-4">
-                        <p className="text-sm text-gray-300 mb-1">
-                            {album?.album_type?.toUpperCase() || 'ALBUM'}
-                        </p>
-                        <h1 className="text-5xl font-bold mb-2">{album?.name}</h1>
-                        <div className="flex items-center gap-2 text-gray-300 mb-4">
-                            <span className="font-semibold">
-                                {album?.artists?.map(artist => artist.name).join(', ')}
-                            </span>
-                            <span>•</span>
-                            <span>{new Date(album?.release_date).getFullYear()}</span>
-                            <span>•</span>
-                            <span>{album?.total_tracks} tracks</span>
-                            <span>•</span>
-                            <span>{getTotalDuration()}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                <FaStar />
-                                Add Review
-                            </button>
-                            <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                <FaHeart />
-                                Save
-                            </button>
-                            <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
-                                <FaShare />
-                            </button>
+                {/* Content */}
+                <div className="relative h-full flex items-end p-8">
+                    <div className="flex items-end gap-6">
+                        <img
+                            src={album?.images?.[0]?.url || '/default-album.png'}
+                            alt={album?.name}
+                            className="w-48 h-48 rounded-lg shadow-2xl hidden md:block"
+                        />
+                        <div className="mb-4">
+                            <p className="text-sm text-gray-300 mb-1">
+                                {album?.album_type?.toUpperCase() || 'ALBUM'}
+                            </p>
+                            <h1 className="text-5xl font-bold mb-2">{album?.name}</h1>
+                            <div className="flex items-center gap-2 text-gray-300 mb-4">
+                                <span className="font-semibold">
+                                    {album?.artists?.map(artist => artist.name).join(', ')}
+                                </span>
+                                <span>•</span>
+                                <span>{new Date(album?.release_date).getFullYear()}</span>
+                                <span>•</span>
+                                <span>{album?.total_tracks} tracks</span>
+                                <span>•</span>
+                                <span>{getTotalDuration()}</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
+                                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
+                                    <FaStar />
+                                    Add Review
+                                </button>
+                                <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
+                                    <FaHeart />
+                                    Save
+                                </button>
+                                <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
+                                    <FaShare />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
 
     const TrackList = () => (
         <div className="space-y-4">
@@ -165,12 +182,6 @@ const albumDetail = () => {
                         </div>
                         <span className="text-gray-400 text-sm">{formatDuration(track.duration_ms)}</span>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                                className="text-orange-500 hover:text-orange-400 transition-colors"
-                                title="Add Review"
-                            >
-                                <FaStar />
-                            </button>
                             <button
                                 className="text-gray-400 hover:text-white transition-colors"
                                 title="Add to Favorites"
@@ -216,7 +227,7 @@ const albumDetail = () => {
                         )}
                     </div>
                 </div>
-
+                <ReviewList itemId={id} itemType="album" />
                 {artistsDetails && artistsDetails.length > 0 && (
                     <div className="bg-gray-800 p-6 rounded-lg">
                         <h3 className="font-bold mb-4">Artists</h3>
@@ -276,6 +287,37 @@ const albumDetail = () => {
                         </button>
                         <BeatHubLogo />
                     </div>
+                    <div className='flex items-center gap-3 ml-auto'>
+                        {user ? (
+                            <div className="flex items-center gap-4">
+                                <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
+                                    <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
+                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-4">
+                                <Link
+                                    to="/login"
+                                    className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
+                                >
+                                    Log In
+                                </Link>
+
+                                <Link
+                                    to="/register"
+                                    className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
+                                >
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </header>
 
@@ -312,6 +354,13 @@ const albumDetail = () => {
                         </div>
                     </div>
                 )}
+                <ReviewModal
+                    isOpen={isReviewModalOpen}
+                    onClose={() => setIsReviewModalOpen(false)}
+                    itemName={album?.name || 'this album'}
+                    itemId={id}
+                    itemType="album"
+                />
             </main>
         </div>
     )
