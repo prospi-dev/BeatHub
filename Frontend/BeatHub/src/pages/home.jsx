@@ -1,10 +1,11 @@
-import React from 'react'
-import BeatHubLogo from '../components/beatHubLogo'
 import { IoIosMenu, IoIosSearch, IoIosStar } from "react-icons/io";
 import { FaHeadphones, FaUsers, FaPen, FaHeart, FaChartLine } from "react-icons/fa";
 import { IoMusicalNote } from "react-icons/io5";
 import { HiMusicNote } from "react-icons/hi";
 import { useNavigate } from 'react-router-dom';
+
+import React from 'react'
+import BeatHubLogo from '../components/beatHubLogo'
 import Footer from '../components/footer.jsx';
 
 const Home = () => {

@@ -6,11 +6,11 @@ import { useColor } from 'color-thief-react'
 
 const HeroSection = ({ 
     type,           // "ALBUM", "TRACK", "ARTIST" 
-    title,          // Nombre del album/track/artista
-    imageUrl,       // URL de la imagen principal
-    subtitleInfo,   // Un array o string con la info inferior (ej: ["Artista", "2023", "12 tracks"])
-    existingUserReview, // Para el botón condicional
-    onReviewClick   // Qué hacer cuando tocan el botón de Review
+    title,          // Name of the album/track/artist
+    imageUrl,       // URL of the main image
+    subtitleInfo,   // An array or string with bottom info (e.g: ["Artist", "2023", "12 tracks"])
+    existingUserReview, // For conditional button
+    onReviewClick   // What to do when the Review button is clicked
 }) => {
     const navigate = useNavigate()
     const { user } = useAppAuth()
@@ -42,7 +42,7 @@ const HeroSection = ({
                         </p>
                         <h1 className="text-5xl font-bold mb-2 text-white">{title}</h1>
                         
-                        <div className="flex items-center gap-2 text-gray-300 mb-4 font-medium">
+                        <div className="flex items-center gap-2 text-gray-300 mb-2 font-medium">
                             {subtitleInfo}
                         </div>
 

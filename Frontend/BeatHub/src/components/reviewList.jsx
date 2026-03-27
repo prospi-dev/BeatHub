@@ -4,7 +4,7 @@ import { getReviewsByItem } from '../api/reviews';
 import ReviewCard from './ReviewCard';
 import { useAuth } from '../context/AuthContext';
 
-const ReviewList = ({ itemId, itemType, onUserReviewFound }) => {
+const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -51,7 +51,7 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound }) => {
     useEffect(() => {
         fetchReviews();
         setVisibleCount(REVIEWS_PER_PAGE);
-    }, [itemId]);
+    }, [itemId, refreshTrigger]);
 
     const renderStars = (rating, sizeClass = "text-sm") => {
         return (
@@ -95,7 +95,7 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound }) => {
         <div className="space-y-6">
             {itemType !== 'track' && (
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                    <h2 className="text-xl font-bold text-white">Community Reviews</h2>
+                    <h2 className="text-lg lg:text-2xl font-bold text-white">Reviews</h2>
 
                     {reviews.length > 0 && (
                         <div className="flex items-center gap-4 bg-gray-800/80 px-4 py-2 rounded-xl border border-gray-700/50">

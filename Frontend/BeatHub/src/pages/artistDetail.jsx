@@ -1,16 +1,16 @@
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import React, { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useCallback } from 'react'
 import { getArtistsDetails } from '../api/spotifyService'
-import BeatHubLogo from '../components/beatHubLogo'
-import { FaHeart, FaShare, FaArrowLeft, FaStar, FaUser } from 'react-icons/fa'
+import { FaHeart, FaStar } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
+import { formatDuration } from '../utils/utils';
+
 import AlbumCard from '../components/albumCard'
-import { useColor } from 'color-thief-react'
-import ReviewModal from '../components/ReviewModal'
+import ReviewModal from '../components/reviewModal.jsx'
 import ReviewList from '../components/reviewList';
-import { useAppAuth } from '../hooks/useAppAuth.js'
 import LoadingSpinner from '../components/loadingSpinner.jsx'
 import HeroSection from '../components/heroSection.jsx'
+import Header from '../components/header.jsx'
 
 const artistDetail = () => {
   const [loading, setLoading] = useState(true)
@@ -19,17 +19,27 @@ const artistDetail = () => {
   const [topTracks, setTopTracks] = useState([])
   const [albums, setAlbums] = useState([])
   const [activeTab, setActiveTab] = useState('overview')
-  const { id } = useParams()
+  const [refreshReviewsTrigger, setRefreshReviewsTrigger] = useState(0);
   const [existingUserReview, setExistingUserReview] = useState(null)
-  const navigate = useNavigate()
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
-  const { user, handleLogout } = useAppAuth()
+
+  const { id } = useParams()
+  const navigate = useNavigate()
+
+  const handleReviewSuccess = () => {
+    // Al sumar 1, el useEffect de ReviewList se volverá a ejecutar
+    setRefreshReviewsTrigger(prev => prev + 1);
+  };
+
+  // Memoize the callback for reviews
+  const handleUserReviewFound = useCallback((review) => {
+    setExistingUserReview(review);
+  }, []);
 
   const fetchData = async () => {
     try {
       setLoading(true)
       const response = await getArtistsDetails(id)
-      console.log('Artist Details:', response)
       setArtist(response.artist)
       setTopTracks(response.topTracks?.tracks || [])
       setAlbums((response.albums?.items || []).filter(album => album.album_type === 'album'))
@@ -48,13 +58,6 @@ const artistDetail = () => {
     }
   }, [id])
 
-
-  const formatDuration = (durationMs) => {
-    const minutes = Math.floor(durationMs / 60000)
-    const seconds = Math.floor((durationMs % 60000) / 1000)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
-
   const formatFollowers = (followers) => {
     if (followers >= 1000000) {
       return `${(followers / 1000000).toFixed(1)}M`
@@ -64,13 +67,17 @@ const artistDetail = () => {
     return followers?.toLocaleString() || '0'
   }
 
-  const TabNavigation = () => (
+  // --- RENDER FUNCTIONS (NOT COMPONENTS) ---
+  // Changed from const Component = () => to normal functions returning JSX
+
+  const renderTabNavigation = () => (
     <div className="border-b border-gray-700 mb-8">
       <div className="flex gap-8">
         {[
           { id: 'overview', label: 'Overview' },
           { id: 'albums', label: 'Albums' },
-          { id: 'tracks', label: 'Top Tracks' }
+          { id: 'tracks', label: 'Top Tracks' },
+          { id: 'reviews', label: 'Reviews' } // <-- Added the reviews tab that was in the switch but not in the buttons
         ].map((tab) => (
           <button
             key={tab.id}
@@ -87,7 +94,7 @@ const artistDetail = () => {
     </div>
   )
 
-  const OverviewTab = () => (
+  const renderOverviewTab = () => (
     <div className="space-y-8">
       {/* Popular Tracks */}
       {topTracks.length > 0 && (
@@ -95,7 +102,7 @@ const artistDetail = () => {
           <h2 className="text-2xl font-bold mb-4">Popular Tracks</h2>
           <div className="space-y-2">
             {topTracks.slice(0, 5).map((track, index) => (
-              <div key={track.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 group transition-colors" onClick={() => navigate(`/track/${track.id}`)}>
+              <div key={track.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 group transition-colors cursor-pointer" onClick={() => navigate(`/track/${track.id}`)}>
                 <span className="text-gray-400 w-6 text-center">{index + 1}</span>
                 <img
                   src={track.album?.images?.[0]?.url || '/default-track.png'}
@@ -107,8 +114,8 @@ const artistDetail = () => {
                   <p className="text-sm text-gray-400">{track.album?.name}</p>
                 </div>
                 <span className="text-gray-400 text-sm">{formatDuration(track.duration_ms)}</span>
-                <button className="opacity-0 group-hover:opacity-100 text-orange-500 hover:text-orange-400 transition-all" title="Add Review">
-                  <FaStar />
+                <button className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-white transition-colors" title="Add Review">
+                  <FaHeart />
                 </button>
               </div>
             ))}
@@ -123,13 +130,21 @@ const artistDetail = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {albums.slice(0, 5).map((album) => (
               <div className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer group" key={album.id}>
-                <AlbumCard key={album.id} album={album} />
+                <AlbumCard album={album} />
               </div>
             ))}
           </div>
         </section>
       )}
-      <ReviewList itemId={id} itemType="artist" />
+
+      {/* Review List visible in overview */}
+      <ReviewList
+        itemId={id}
+        itemType="artist"
+        onUserReviewFound={setExistingUserReview}
+        refreshTrigger={refreshReviewsTrigger}
+      />
+
       {/* Artist Stats */}
       <section>
         <h2 className="text-2xl font-bold mb-4">About</h2>
@@ -165,7 +180,7 @@ const artistDetail = () => {
     </div>
   )
 
-  const AlbumsTab = () => (
+  const renderAlbumsTab = () => (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Discography</h2>
@@ -179,19 +194,13 @@ const artistDetail = () => {
           </div>
         )}
       </div>
-    </div >
+    </div>
   )
 
-  const TracksTab = () => (
+  const renderTracksTab = () => (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">All Time Popular</h2>
-        <div className="flex gap-2">
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 transition-colors" title="Add Review">
-            <FaStar />
-            Add Review
-          </button>
-        </div>
       </div>
       <div className="space-y-2">
         {topTracks.map((track, index) => (
@@ -208,9 +217,6 @@ const artistDetail = () => {
             </div>
             <span className="text-gray-400 text-sm">{formatDuration(track.duration_ms)}</span>
             <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button className="text-orange-500 hover:text-orange-400 transition-colors" title="Add Review">
-                <FaStar />
-              </button>
               <button className="text-gray-400 hover:text-white transition-colors" title="Add to Favorites">
                 <FaHeart />
               </button>
@@ -221,67 +227,20 @@ const artistDetail = () => {
     </div>
   )
 
-  const renderTabContent = () => {
+  const renderContent = () => {
     switch (activeTab) {
-      case 'overview':
-        return <OverviewTab />
-      case 'albums':
-        return <AlbumsTab />
-      case 'tracks':
-        return <TracksTab />
-      case 'reviews':
-        return <ReviewList itemId={id} />
-      default:
-        return <OverviewTab />
+      case 'overview': return renderOverviewTab();
+      case 'albums': return renderAlbumsTab();
+      case 'tracks': return renderTracksTab();
+      case 'reviews': return <ReviewList itemId={id} itemType="artist" onUserReviewFound={handleUserReviewFound} />;
+      default: return renderOverviewTab();
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      <header className='sticky top-0 z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-700'>
-        <div className='flex items-center justify-between p-4'>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
-            >
-              <FaArrowLeft />
-            </button>
-            <BeatHubLogo />
-          </div>
-          <div className='flex items-center gap-3 ml-auto'>
-            {user ? (
-              <div className="flex items-center gap-4">
-                <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
-                  <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-4">
-                <Link
-                  to="/login"
-                  className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
-                >
-                  Log In
-                </Link>
-
-                <Link
-                  to="/register"
-                  className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
-                >
-                  Sign Up
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      {/* 2. Using the generic Header */}
+      <Header showBackButton={true} onBackClick={() => navigate(-1)} />
 
       <main>
         {loading ? (
@@ -303,12 +262,12 @@ const artistDetail = () => {
         ) : artist ? (
           <>
             <HeroSection
-              type={artist?.album_type || 'artist'}
+              type={'artist'}
               title={artist?.name}
               imageUrl={artist?.images?.[0]?.url}
               subtitleInfo={
                 <>
-                  <div className="flex items-center gap-4 text-gray-300 mb-4 font-medium">
+                  <div className="flex items-center gap-4 text-gray-300 font-medium">
                     <span>{formatFollowers(artist?.followers?.total)} followers</span>
                     {artist?.genres?.length > 0 && (
                       <>
@@ -323,8 +282,8 @@ const artistDetail = () => {
               onReviewClick={() => setIsReviewModalOpen(true)}
             />
             <div className="container mx-auto px-4 pb-8">
-              <TabNavigation />
-              {renderTabContent()}
+              {renderTabNavigation()}
+              {renderContent()}
             </div>
           </>
         ) : (
@@ -336,12 +295,15 @@ const artistDetail = () => {
             </div>
           </div>
         )}
+
         <ReviewModal
           isOpen={isReviewModalOpen}
           onClose={() => setIsReviewModalOpen(false)}
           itemName={artist?.name || 'this artist'}
           itemId={id}
           itemType="artist"
+          existingReview={existingUserReview}
+          onReviewSuccess={handleReviewSuccess}
         />
       </main>
     </div>

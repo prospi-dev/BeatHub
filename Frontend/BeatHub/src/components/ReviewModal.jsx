@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaStar, FaTimes, FaSpinner } from 'react-icons/fa';
 import { createReview } from '../api/reviews'
 
-const ReviewModal = ({ isOpen, onClose, itemName, itemId, itemType }) => {
+const ReviewModal = ({ isOpen, onClose, itemName, itemId, itemType, existingReview, onReviewSuccess }) => {
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(0);
     const [comment, setComment] = useState('');
@@ -10,6 +10,16 @@ const ReviewModal = ({ isOpen, onClose, itemName, itemId, itemType }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        if (isOpen && existingReview) {
+            setRating(existingReview.rating);
+            setComment(existingReview.comment || '');
+        } else if (isOpen && !existingReview) {
+            setRating(0);
+            setComment('');
+        }
+    }, [isOpen, existingReview]);
 
     if (!isOpen) return null;
 
@@ -26,7 +36,6 @@ const ReviewModal = ({ isOpen, onClose, itemName, itemId, itemType }) => {
 
         try {
             const trimmedComment = comment.trim();
-
             const payload = {
                 spotifyItemId: itemId,
                 rating,
@@ -34,19 +43,18 @@ const ReviewModal = ({ isOpen, onClose, itemName, itemId, itemType }) => {
                 ...(trimmedComment ? { comment: trimmedComment } : {})
             };
 
-            await createReview( payload);
-
+            await createReview(payload);
             setSuccess(true);
+
+            if (onReviewSuccess) {
+                onReviewSuccess();
+            }
 
             setTimeout(() => {
                 handleClose();
             }, 1500);
         } catch (err) {
-            const backendMessage =
-                err?.response?.data?.message ||
-                err?.response?.data?.error ||
-                (typeof err?.response?.data === 'string' ? err.response.data : null);
-
+            const backendMessage = err?.response?.data?.message || err?.response?.data?.error || (typeof err?.response?.data === 'string' ? err.response.data : null);
             setError(backendMessage || 'Failed to submit review. Please try again.');
         } finally {
             setLoading(false);

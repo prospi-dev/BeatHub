@@ -4,7 +4,7 @@ import Catalog from './pages/catalog.jsx'
 import ArtistDetail from './pages/artistDetail.jsx'
 import AlbumDetail from './pages/albumDetail.jsx'
 import TrackDetail from './pages/trackDetail.jsx'
-import LoginPage from './pages/temp.jsx'
+import LoginPage from './pages/LoginPage.jsx'
 import AuthRoute from './components/AuthRoute.jsx'
 import RegisterPage from './pages/registerPage.jsx'
 
