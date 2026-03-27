@@ -1,13 +1,15 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import { getTrackDetails, getMultipleArtistsDetails } from '../api/spotifyService'
 import BeatHubLogo from '../components/beatHubLogo'
-import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaMusic } from 'react-icons/fa'
+import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaMusic, FaUser } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
 import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
 import { useAuth } from '../context/AuthContext'
 import ReviewList from '../components/reviewList'
+
+
 const TrackDetail = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -50,6 +52,11 @@ const TrackDetail = () => {
         const minutes = Math.floor(durationMs / 60000)
         const seconds = Math.floor((durationMs % 60000) / 1000)
         return `${minutes}:${seconds.toString().padStart(2, '0')}`
+    }
+
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
     }
 
     const formatReleaseDate = (dateString) => {
@@ -136,23 +143,13 @@ const TrackDetail = () => {
 
     const ReviewsSection = () => (
         <div className="bg-gray-800 p-6 rounded-lg mb-8">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Reviews</h2>
-                <button
-                    onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 transition-colors">
-                    <FaStar />
-                    Write Review
-                </button>
-            </div>
-
             {ReviewList.length === 0 ? (
                 <div className="text-center p-12 bg-gray-800/50 rounded-2xl border border-gray-700/50">
                     <p className="text-gray-400 mb-2">No reviews yet.</p>
                     <p className="text-sm text-gray-500">Be the first to share your thoughts!</p>
                 </div>
             ) : (
-                <ReviewList itemId={id} itemType="track" />
+                <ReviewList itemId={id} itemType="album" />
             )}
 
         </div>
@@ -298,7 +295,39 @@ const TrackDetail = () => {
                         </button>
                         <BeatHubLogo />
                     </div>
+                    <div className='flex items-center gap-3 ml-auto'>
+                    {user ? (
+                        <div className="flex items-center gap-4">
+                            <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
+                                <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-4">
+                            <Link
+                                to="/login"
+                                className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
+                            >
+                                Log In
+                            </Link>
+
+                            <Link
+                                to="/register"
+                                className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
+                    )}
                 </div>
+                </div>
+            
             </header>
 
             <main>

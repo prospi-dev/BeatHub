@@ -4,7 +4,7 @@ import {useNavigate} from 'react-router-dom'
 const beatHubLogo = () => {
   const navigate = useNavigate()
   return (
-    <img src={logo} alt="BeatHub Logo" className="w-20 md:w-35 lg:w-40" onClick={() => navigate('/')}/>)
+    <img src={logo} alt="BeatHub Logo" className="w-20 md:w-35 lg:w-40" onClick={() => navigate('/catalog')}/>)
 }
 
 export default beatHubLogo

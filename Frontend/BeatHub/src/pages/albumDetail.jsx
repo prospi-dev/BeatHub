@@ -1,13 +1,15 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import { getAlbumDetails, getMultipleArtistsDetails } from '../api/spotifyService'
 import BeatHubLogo from '../components/beatHubLogo'
-import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock } from 'react-icons/fa'
+import { FaHeart, FaShare, FaArrowLeft, FaStar, FaClock, FaUser } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
 import { useColor } from 'color-thief-react'
 import ReviewModal from '../components/ReviewModal'
 import { useAuth } from '../context/AuthContext'
 import ReviewList from '../components/reviewList'
+
+
 const albumDetail = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -78,7 +80,10 @@ const albumDetail = () => {
             <span className="ml-3 text-gray-400">Loading album...</span>
         </div>
     )
-
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
     const HeroSection = () => {
 
         const imageUrl = album?.images?.[0]?.url || '/default-album.png';
@@ -177,12 +182,6 @@ const albumDetail = () => {
                         </div>
                         <span className="text-gray-400 text-sm">{formatDuration(track.duration_ms)}</span>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                                className="text-orange-500 hover:text-orange-400 transition-colors"
-                                title="Add Review"
-                            >
-                                <FaStar />
-                            </button>
                             <button
                                 className="text-gray-400 hover:text-white transition-colors"
                                 title="Add to Favorites"
@@ -287,6 +286,37 @@ const albumDetail = () => {
                             <FaArrowLeft />
                         </button>
                         <BeatHubLogo />
+                    </div>
+                    <div className='flex items-center gap-3 ml-auto'>
+                        {user ? (
+                            <div className="flex items-center gap-4">
+                                <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
+                                    <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
+                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-4">
+                                <Link
+                                    to="/login"
+                                    className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
+                                >
+                                    Log In
+                                </Link>
+
+                                <Link
+                                    to="/register"
+                                    className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
+                                >
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             </header>

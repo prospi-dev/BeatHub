@@ -38,7 +38,9 @@ const Home = () => {
                         <IoIosSearch className='text-xl' />
                         Start Exploring
                     </button>
-                    <button className='bg-transparent border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-semibold py-4 px-8 rounded-full text-lg transition-all duration-300 flex items-center gap-2'>
+                    <button
+                        onClick={() => navigate('/login')}
+                        className='bg-transparent border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-semibold py-4 px-8 rounded-full text-lg transition-all duration-300 flex items-center gap-2'>
                         <FaPen className='text-lg' />
                         Write a Review
                     </button>
@@ -136,7 +138,9 @@ const Home = () => {
                     <p className='text-xl text-orange-100 mb-8 max-w-2xl mx-auto'>
                         Join thousands of music enthusiasts discovering, reviewing, and sharing their favorite tracks on BeatHub.
                     </p>
-                    <button className='bg-white text-orange-500 hover:bg-gray-100 font-bold py-4 px-10 rounded-full text-xl transition-all duration-300 hover:scale-105 shadow-xl'>
+                    <button
+                        onClick={() => navigate('/login')}
+                        className='bg-white text-orange-500 hover:bg-gray-100 font-bold py-4 px-10 rounded-full text-xl transition-all duration-300 hover:scale-105 shadow-xl'>
                         Join BeatHub Today
                     </button>
                 </div>

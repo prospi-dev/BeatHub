@@ -1,8 +1,8 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import { getArtistsDetails } from '../api/spotifyService'
 import BeatHubLogo from '../components/beatHubLogo'
-import { FaHeart, FaShare, FaArrowLeft, FaStar } from 'react-icons/fa'
+import { FaHeart, FaShare, FaArrowLeft, FaStar, FaUser } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
 import AlbumCard from '../components/albumCard'
 import { useColor } from 'color-thief-react'
@@ -44,7 +44,10 @@ const artistDetail = () => {
     }
   }, [id])
 
-
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
   const formatDuration = (durationMs) => {
     const minutes = Math.floor(durationMs / 60000)
     const seconds = Math.floor((durationMs % 60000) / 1000)
@@ -292,7 +295,7 @@ const artistDetail = () => {
         return <AlbumsTab />
       case 'tracks':
         return <TracksTab />
-      case 'reviews': 
+      case 'reviews':
         return <ReviewList itemId={id} />
       default:
         return <OverviewTab />
@@ -311,6 +314,37 @@ const artistDetail = () => {
               <FaArrowLeft />
             </button>
             <BeatHubLogo />
+          </div>
+          <div className='flex items-center gap-3 ml-auto'>
+            {user ? (
+              <div className="flex items-center gap-4">
+                <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
+                  <span className="text-white font-medium"><FaUser className='text-2xl text-orange-500' /></span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <Link
+                  to="/login"
+                  className="text-gray-300 hover:text-white font-semibold py-2 px-4 transition-colors"
+                >
+                  Log In
+                </Link>
+
+                <Link
+                  to="/register"
+                  className="hidden bg-orange-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-orange-600 hover:scale-105 transition-all shadow-lg shadow-orange-500/20 md:block"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </header>
