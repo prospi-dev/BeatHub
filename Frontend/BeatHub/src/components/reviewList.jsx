@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { FaStar, FaTimes, FaUserCircle } from 'react-icons/fa';
 import { getReviewsByItem } from '../api/reviews';
 import ReviewCard from './ReviewCard';
+import { useAuth } from '../context/AuthContext';
 
-const ReviewList = ({ itemId, itemType }) => {
+const ReviewList = ({ itemId, itemType, onUserReviewFound }) => {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    const { user } = useAuth();
 
     const [visibleCount, setVisibleCount] = useState(4);
     const REVIEWS_PER_PAGE = 4;
@@ -21,6 +24,21 @@ const ReviewList = ({ itemId, itemType }) => {
             setLoading(true);
             const data = await getReviewsByItem(itemId);
             setReviews(data);
+            console.log("Fetched reviews:", data);
+            console.log("Current user:", user.email);
+
+            if (user && data.length > 0) {
+                const userReview = data.find(review => review.email === user.email);
+
+                console.log("Found user review:", userReview);
+
+                if (userReview && onUserReviewFound) {
+                    onUserReviewFound(userReview);
+                } else if (onUserReviewFound) {
+                    onUserReviewFound(null);
+                }
+            }
+
             setError('');
         } catch (err) {
             console.error("Error fetching reviews:", err);
@@ -87,7 +105,7 @@ const ReviewList = ({ itemId, itemType }) => {
                                 <span className="text-gray-500 text-sm">/ 5</span>
                             </div>
 
-                            <div className="w-px h-6 bg-gray-700"></div> 
+                            <div className="w-px h-6 bg-gray-700"></div>
 
                             <span className="text-gray-400 text-sm font-medium">
                                 {reviews.length} {reviews.length === 1 ? 'Review' : 'Reviews'}
@@ -111,7 +129,7 @@ const ReviewList = ({ itemId, itemType }) => {
                                 review={review}
                                 renderStars={renderStars}
                                 formatDate={formatDate}
-                                onReadMore={openReadMoreModal} 
+                                onReadMore={openReadMoreModal}
                             />
                         ))}
                     </div>
@@ -132,7 +150,7 @@ const ReviewList = ({ itemId, itemType }) => {
             {isReadModalOpen && selectedReview && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="relative w-full max-w-lg bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-6 md:p-8 animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
-                        
+
                         <button
                             onClick={() => setIsReadModalOpen(false)}
                             className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-full transition-colors"

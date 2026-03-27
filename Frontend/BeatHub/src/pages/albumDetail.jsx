@@ -16,6 +16,7 @@ const albumDetail = () => {
     const [album, setAlbum] = useState(null)
     const [tracks, setTracks] = useState([])
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
+    const [existingUserReview, setExistingUserReview] = useState(null)
     const [artistsDetails, setArtistsDetails] = useState([])
     const { id } = useParams()
     const navigate = useNavigate()
@@ -128,9 +129,14 @@ const albumDetail = () => {
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => { user ? setIsReviewModalOpen(true) : navigate('/login') }}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg">
-                                    <FaStar />
-                                    Add Review
+                                    className={`${
+                                        existingUserReview 
+                                            ? 'bg-gray-700 hover:bg-gray-600 border border-gray-500' 
+                                            : 'bg-orange-500 hover:bg-orange-600'
+                                    } text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg`}
+                                >
+                                    <FaStar className={existingUserReview ? 'text-orange-500' : ''} />
+                                    {existingUserReview ? 'Edit Review' : 'Add Review'}
                                 </button>
                                 <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
                                     <FaHeart />
