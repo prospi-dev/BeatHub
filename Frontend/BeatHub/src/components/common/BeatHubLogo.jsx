@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../assets/logos/beathub.png' 
+import logo from '../../assets/logos/beathub.png' 
 import {useNavigate} from 'react-router-dom'
 const beatHubLogo = () => {
   const navigate = useNavigate()

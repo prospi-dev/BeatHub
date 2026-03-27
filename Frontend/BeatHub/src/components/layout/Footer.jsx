@@ -1,5 +1,5 @@
 import React from 'react'
-import SpotifyFullLogo from '../assets/logos/Full_Logo_White_CMYK.svg'
+import SpotifyFullLogo from '../../assets/logos/Full_Logo_White_CMYK.svg'
 import { useNavigate } from 'react-router-dom';
 
 const footer = () => {

@@ -1,4 +1,4 @@
-import api from './axiosInstance.jsx';
+import api from './axiosInstance.js';
 
 export const getNewReleases = async (offset = 0) => {
     const response = await api.get(`Spotify/new-releases?limit=20&offset=${offset}`);
