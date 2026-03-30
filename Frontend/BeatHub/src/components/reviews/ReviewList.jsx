@@ -40,7 +40,6 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
             setIsDeleteModalOpen(false);
             setReviewToDelete(null);
         } catch (err) {
-            console.error("Error deleting review:", err);
             alert("Failed to delete the review. Please try again.");
         }
     };
@@ -52,13 +51,9 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
             setLoading(true);
             const data = await getReviewsByItem(itemId);
             setReviews(data);
-            console.log("Fetched reviews:", data);
-            console.log("Current user:", user.email);
 
             if (user && data.length > 0) {
                 const userReview = data.find(review => review.email === user.email);
-
-                console.log("Found user review:", userReview);
 
                 if (userReview && onUserReviewFound) {
                     onUserReviewFound(userReview);
