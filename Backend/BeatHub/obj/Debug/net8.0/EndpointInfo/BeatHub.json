@@ -585,6 +585,28 @@
           }
         }
       }
+    },
+    "/api/Users/{username}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -711,6 +733,9 @@
     },
     {
       "name": "Spotify"
+    },
+    {
+      "name": "Users"
     }
   ]
 }

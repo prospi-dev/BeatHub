@@ -36,7 +36,7 @@ namespace BeatHub.Controllers
             var userProfile = new
             {
                 Username = user.Username,
-                JoinedAt = user.Reviews.FirstOrDefault()?.CreatedAt ?? DateTime.UtcNow, // Si tuvieras un CreatedAt en User, úsalo aquí
+                JoinedAt = user.Reviews.FirstOrDefault()?.CreatedAt ?? DateTime.UtcNow, 
                 TotalReviews = user.Reviews.Count,
                 TotalFavorites = user.Favorites.Count,
                 Reviews = user.Reviews.OrderByDescending(r => r.CreatedAt).Select(r => new

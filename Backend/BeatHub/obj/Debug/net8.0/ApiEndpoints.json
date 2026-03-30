@@ -377,5 +377,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BeatHub.Controllers.UsersController",
+    "Method": "GetUserProfile",
+    "RelativePath": "api/Users/{username}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
