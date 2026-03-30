@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaHeart, FaShare, FaStar } from 'react-icons/fa'
 import { useAppAuth } from '../../hooks/useAppAuth'
 import { useColor } from 'color-thief-react'
-
-const HeroSection = ({ 
+import { addFavorite, removeFavorite, getUserFavorites } from '../../api/favorites'
+import FavoriteButton from '../common/FavoriteButton'
+const HeroSection = ({
+    itemId,         // Spotify ID of the item
     type,           // "ALBUM", "TRACK", "ARTIST" 
     title,          // Name of the album/track/artist
     imageUrl,       // URL of the main image
@@ -41,7 +43,7 @@ const HeroSection = ({
                             {type?.toUpperCase()}
                         </p>
                         <h1 className="text-5xl font-bold mb-2 text-white">{title}</h1>
-                        
+
                         <div className="flex items-center gap-2 text-gray-300 mb-2 font-medium">
                             {subtitleInfo}
                         </div>
@@ -57,10 +59,7 @@ const HeroSection = ({
                                 <FaStar className={existingUserReview ? 'text-orange-500' : ''} />
                                 {existingUserReview ? 'Edit Review' : 'Add Review'}
                             </button>
-                            <button className="border border-gray-400 hover:border-white text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors">
-                                <FaHeart />
-                                Save
-                            </button>
+                            <FavoriteButton itemId={itemId} itemType={type} />
                             <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
                                 <FaShare />
                             </button>
