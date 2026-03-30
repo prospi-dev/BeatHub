@@ -7,6 +7,7 @@ import TrackDetail from './pages/trackDetail.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import AuthRoute from './components/router/AuthRoute.jsx'
 import RegisterPage from './pages/registerPage.jsx'
+import UserProfile from './pages/UserProfile.jsx'
 
 export default function App() {
     return (
@@ -18,6 +19,7 @@ export default function App() {
             <Route path='/track/:id' element={<TrackDetail />} />
             <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
             <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
+            <Route path="/user/:username" element={<UserProfile />} />
         </Routes>
     )
 }

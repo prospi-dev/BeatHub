@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaUserCircle, FaTrash } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const ReviewCard = ({ review, renderStars, formatDate, onReadMore, isOwner, onDelete }) => {
     const MAX_LENGTH = 30;
@@ -9,13 +10,17 @@ const ReviewCard = ({ review, renderStars, formatDate, onReadMore, isOwner, onDe
         <div className="bg-gray-800/50 hover:bg-gray-800 border border-gray-700/50 hover:border-gray-600 rounded-2xl p-5 transition-all duration-300 h-fit">
             <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-md shrink-0">
-                        {review.username ? review.username.charAt(0).toUpperCase() : <FaUserCircle className="text-xl" />}
-                    </div>
-                    <div>
-                        <p className="font-semibold text-white">{review.username || 'Anonymous'}</p>
-                        {renderStars(review.rating)}
-                    </div>
+                    <Link to={`/user/${review.username || 'unknown'}`} className="flex items-center gap-3 group">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-md shrink-0 transition-transform group-hover:scale-105">
+                            {review.username ? review.username.charAt(0).toUpperCase() : <FaUserCircle className="text-xl" />}
+                        </div>
+                        <div>
+                            <p className="font-semibold text-white group-hover:text-orange-500 transition-colors">
+                                {review.username || 'Anonymous'}
+                            </p>
+                            {renderStars(review.rating)}
+                        </div>
+                    </Link>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                     <span className={`text-xs text-gray-500 font-medium whitespace-nowrap ml-2 `}>

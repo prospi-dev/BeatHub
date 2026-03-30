@@ -45,11 +45,11 @@ export function AuthProvider({ children }) {
   const login = (data) => {
     localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify({
-      name: data.name,
+      username: data.username,
       email: data.email
     }))
     setToken(data.token)
-    setUser({ name: data.name, email: data.email })
+    setUser({ username: data.username, email: data.email })
   }
 
   const logout = () => {
