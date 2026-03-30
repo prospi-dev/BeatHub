@@ -3,6 +3,7 @@ import { FaStar, FaTimes, FaUserCircle } from 'react-icons/fa';
 import { getReviewsByItem } from '../../api/reviews';
 import ReviewCard from './ReviewCard';
 import { useAuth } from '../../context/AuthContext';
+import { deleteReview } from '../../api/reviews';
 
 const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => {
     const [reviews, setReviews] = useState([]);
@@ -16,6 +17,33 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
 
     const [selectedReview, setSelectedReview] = useState(null);
     const [isReadModalOpen, setIsReadModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [reviewToDelete, setReviewToDelete] = useState(null);
+
+    const handleDeleteClick = (reviewId) => {
+        setReviewToDelete(reviewId);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDeleteReview = async () => {
+        if (!reviewToDelete) return;
+
+        try {
+            await deleteReview(reviewToDelete);
+
+            setReviews(prevReviews => prevReviews.filter(r => r.id !== reviewToDelete));
+
+            if (onUserReviewFound) {
+                onUserReviewFound(null);
+            }
+
+            setIsDeleteModalOpen(false);
+            setReviewToDelete(null);
+        } catch (err) {
+            console.error("Error deleting review:", err);
+            alert("Failed to delete the review. Please try again.");
+        }
+    };
 
     const fetchReviews = async () => {
         if (!itemId) return;
@@ -95,19 +123,19 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
         <div className="space-y-6">
             {itemType !== 'track' && (
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                    <h2 className="text-lg lg:text-2xl font-bold text-white">Reviews</h2>
+                    <h2 className="text-md lg:text-xl font-bold text-white">Reviews</h2>
 
                     {reviews.length > 0 && (
                         <div className="flex items-center gap-4 bg-gray-800/80 px-4 py-2 rounded-xl border border-gray-700/50">
                             <div className="flex items-center gap-2">
-                                <FaStar className="text-orange-500 text-xl" />
-                                <span className="text-white font-bold text-lg">{averageRating}</span>
+                                <FaStar className="text-orange-500 text-md" />
+                                <span className="text-white font-bold text-md">{averageRating}</span>
                                 <span className="text-gray-500 text-sm">/ 5</span>
                             </div>
 
                             <div className="w-px h-6 bg-gray-700"></div>
 
-                            <span className="text-gray-400 text-sm font-medium">
+                            <span className="text-gray-400 text-xs xl:text-sm font-medium">
                                 {reviews.length} {reviews.length === 1 ? 'Review' : 'Reviews'}
                             </span>
                         </div>
@@ -122,16 +150,19 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
                 </div>
             ) : (
                 <>
-                    <div className="grid gap-4 md:grid-cols-2 items-start">
+                    <div className="grid gap-4 2xl:grid-cols-2 items-start">
                         {visibleReviews.map((review) => (
-                            <ReviewCard
-                                key={review.id}
-                                review={review}
-                                renderStars={renderStars}
-                                formatDate={formatDate}
-                                onReadMore={openReadMoreModal}
-                            />
-                        ))}
+                            console.log("Rendering review:", review.email) || (
+                                <ReviewCard
+                                    key={review.id}
+                                    review={review}
+                                    renderStars={renderStars}
+                                    formatDate={formatDate}
+                                    onReadMore={openReadMoreModal}
+                                    onDelete={handleDeleteClick}
+                                    isOwner={user?.email === review.email}
+                                />
+                            )))}
                     </div>
 
                     {hasMoreReviews && (
@@ -146,7 +177,33 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
                     )}
                 </>
             )}
-
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="relative w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-6 animate-in zoom-in-95 duration-200">
+                        <h3 className="text-xl font-bold text-white mb-2">Delete Review</h3>
+                        <p className="text-gray-400 mb-6">
+                            Are you sure you want to delete your review? This action cannot be undone.
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => {
+                                    setIsDeleteModalOpen(false);
+                                    setReviewToDelete(null);
+                                }}
+                                className="px-4 py-2 text-gray-400 hover:text-white transition-colors font-medium rounded-xl"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDeleteReview}
+                                className="px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-colors font-medium"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             {isReadModalOpen && selectedReview && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="relative w-full max-w-lg bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-6 md:p-8 animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
