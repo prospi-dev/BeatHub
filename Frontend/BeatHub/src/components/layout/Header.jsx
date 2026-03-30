@@ -37,7 +37,8 @@ const Header = ({
                 <div className="flex items-center gap-3 ml-auto">
                     {user ? (
                         <div className="flex items-center gap-4">
-                            <Link to="/profile" className="text-gray-400 text-base hover:text-white transition">
+                            {console.log ("User in Header:", user)}
+                            <Link to={`/user/${user}`} className="text-gray-400 text-base hover:text-white transition">
                                 <span className="text-white font-medium">
                                     <FaUser className="text-2xl text-orange-500" />
                                 </span>
