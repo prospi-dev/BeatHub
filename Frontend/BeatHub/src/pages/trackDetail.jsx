@@ -9,6 +9,7 @@ import ReviewList from '../components/reviews/ReviewList'
 import Footer from '../components/layout/Footer'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import HeroSection from '../components/layout/HeroSection'
+import FavoriteButton from '../components/common/FavoriteButton'
 
 import { formatDuration, formatReleaseDate } from '../utils/utils'
 
@@ -85,7 +86,8 @@ const TrackDetail = () => {
                     <>
                         {/* HERO SECTION */}
                         <HeroSection
-                            type={track?.album?.album_type || 'track'}
+                            itemId={id}
+                            type={'track'}
                             title={track?.name}
                             imageUrl={track?.album?.images?.[0]?.url}
                             subtitleInfo={

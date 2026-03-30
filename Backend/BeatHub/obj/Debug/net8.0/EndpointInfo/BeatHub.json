@@ -67,6 +67,93 @@
         }
       }
     },
+    "/api/Favorites/my-favorites": {
+      "get": {
+        "tags": [
+          "Favorites"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Favorites/check/{spotifyItemId}": {
+      "get": {
+        "tags": [
+          "Favorites"
+        ],
+        "parameters": [
+          {
+            "name": "spotifyItemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Favorites": {
+      "post": {
+        "tags": [
+          "Favorites"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFavoriteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFavoriteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFavoriteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Favorites/{spotifyItemId}": {
+      "delete": {
+        "tags": [
+          "Favorites"
+        ],
+        "parameters": [
+          {
+            "name": "spotifyItemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Reviews/item/{spotifyItemId}": {
       "get": {
         "tags": [
@@ -502,6 +589,24 @@
   },
   "components": {
     "schemas": {
+      "CreateFavoriteDto": {
+        "required": [
+          "itemType",
+          "spotifyItemId"
+        ],
+        "type": "object",
+        "properties": {
+          "spotifyItemId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "itemType": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateReviewDto": {
         "required": [
           "itemType",
@@ -597,6 +702,9 @@
   "tags": [
     {
       "name": "Auth"
+    },
+    {
+      "name": "Favorites"
     },
     {
       "name": "Reviews"

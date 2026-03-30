@@ -147,7 +147,6 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
                 <>
                     <div className="grid gap-4 2xl:grid-cols-2 items-start">
                         {visibleReviews.map((review) => (
-                            console.log("Rendering review:", review.email) || (
                                 <ReviewCard
                                     key={review.id}
                                     review={review}
@@ -157,7 +156,7 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
                                     onDelete={handleDeleteClick}
                                     isOwner={user?.email === review.email}
                                 />
-                            )))}
+                            ))}
                     </div>
 
                     {hasMoreReviews && (

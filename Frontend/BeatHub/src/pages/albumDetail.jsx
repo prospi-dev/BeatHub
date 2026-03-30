@@ -10,6 +10,7 @@ import ReviewList from '../components/reviews/ReviewList'
 import Footer from '../components/layout/Footer'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import HeroSection from '../components/layout/HeroSection'
+import FavoriteButton from '../components/common/FavoriteButton'
 
 import { formatDuration, getTotalDuration, formatReleaseDate } from '../utils/utils';
 
@@ -83,6 +84,7 @@ const albumDetail = () => {
                 ) : album ? (
                     <>
                         <HeroSection
+                            itemId={id}
                             type={album?.album_type || 'album'}
                             title={album?.name}
                             imageUrl={album?.images?.[0]?.url}
@@ -131,9 +133,11 @@ const albumDetail = () => {
                                                     </div>
                                                 </div>
                                                 <span className="text-gray-400 text-sm">{formatDuration(track.duration_ms)}</span>
-                                                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button className="text-gray-400 hover:text-white transition-colors" title="Add to Favorites"><FaHeart /></button>
-                                                </div>
+                                                <FavoriteButton
+                                                    itemId={track.id}
+                                                    itemType="track"
+                                                    layout="icon"
+                                                />
                                             </div>
                                         ))}
                                     </div>

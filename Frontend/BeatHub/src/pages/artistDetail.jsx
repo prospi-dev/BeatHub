@@ -11,6 +11,7 @@ import ReviewList from '../components/reviews/ReviewList.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx'
 import HeroSection from '../components/layout/HeroSection.jsx'
 import Header from '../components/layout/Header.jsx'
+import FavoriteButton from '../components/common/FavoriteButton.jsx'
 
 const artistDetail = () => {
   const [loading, setLoading] = useState(true)
@@ -27,7 +28,6 @@ const artistDetail = () => {
   const navigate = useNavigate()
 
   const handleReviewSuccess = () => {
-    // Al sumar 1, el useEffect de ReviewList se volverá a ejecutar
     setRefreshReviewsTrigger(prev => prev + 1);
   };
 
@@ -114,9 +114,11 @@ const artistDetail = () => {
                   <p className="text-sm text-gray-400">{track.album?.name}</p>
                 </div>
                 <span className="text-gray-400 text-sm">{formatDuration(track.duration_ms)}</span>
-                <button className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-white transition-colors" title="Add Review">
-                  <FaHeart />
-                </button>
+                <FavoriteButton
+                  itemId={track.id}
+                  itemType="track"
+                  layout="icon"
+                />
               </div>
             ))}
           </div>
@@ -262,6 +264,7 @@ const artistDetail = () => {
         ) : artist ? (
           <>
             <HeroSection
+              itemId={id}
               type={'artist'}
               title={artist?.name}
               imageUrl={artist?.images?.[0]?.url}

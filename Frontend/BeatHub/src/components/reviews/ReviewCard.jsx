@@ -21,7 +21,6 @@ const ReviewCard = ({ review, renderStars, formatDate, onReadMore, isOwner, onDe
                     <span className={`text-xs text-gray-500 font-medium whitespace-nowrap ml-2 `}>
                         {formatDate(review.createdAt)}
                     </span>
-                    {console.log("ReviewCard props:", { review, isOwner }) || null}
                     {isOwner && (
                         <button
                             onClick={() => onDelete(review.id)}
