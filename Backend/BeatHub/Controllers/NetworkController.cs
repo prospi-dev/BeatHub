@@ -1,0 +1,111 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using BeatHub.Data;
+using BeatHub.Models;
+using System.Security.Claims;
+
+namespace BeatHub.Controllers
+{
+	[Route("api/[controller]")]
+	[ApiController]
+	[Authorize]
+	public class NetworkController : ControllerBase
+	{
+		private readonly AppDbContext _db;
+
+		public NetworkController(AppDbContext db)
+		{
+			_db = db;
+		}
+
+		// POST: api/network/follow/{username}
+		[HttpPost("follow/{username}")]
+		public async Task<IActionResult> FollowUser(string username)
+		{
+			var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+			{
+				return Unauthorized("Invalid user token.");
+			}
+
+			var targetUser = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+			if (targetUser == null) return NotFound("User not found.");
+			if (userId == targetUser.Id) return BadRequest("You cannot follow yourself.");
+
+			var alreadyFollowing = await _db.UserFollows
+				.AnyAsync(uf => uf.FollowerId == userId && uf.FollowingId == targetUser.Id);
+
+			if (alreadyFollowing) return Ok(new { message = "Already following" });
+
+			_db.UserFollows.Add(new UserFollow
+			{
+				FollowerId = userId,
+				FollowingId = targetUser.Id
+			});
+			await _db.SaveChangesAsync();
+
+			return Ok(new { message = $"You are now following {username}" });
+		}
+
+		// DELETE: api/network/unfollow/{username}
+		[HttpDelete("unfollow/{username}")]
+		public async Task<IActionResult> UnfollowUser(string username)
+		{
+			var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+			{
+				return Unauthorized("Invalid user token.");
+			}
+			var targetUser = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+			if (targetUser == null) return NotFound("User not found.");
+
+			var follow = await _db.UserFollows
+				.FirstOrDefaultAsync(uf => uf.FollowerId == userId && uf.FollowingId == targetUser.Id);
+
+			if (follow == null) return Ok(new { message = "Not following" });
+
+			_db.UserFollows.Remove(follow);
+			await _db.SaveChangesAsync();
+
+			return Ok(new { message = $"Unfollowed {username}" });
+		}
+
+		// GET: api/network/feed
+		[HttpGet("feed")]
+		public async Task<IActionResult> GetActivityFeed()
+		{
+			var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+			{
+				return Unauthorized("Invalid user token.");
+			}
+
+			var followingIds = await _db.UserFollows
+				.Where(uf => uf.FollowerId == userId)
+				.Select(uf => uf.FollowingId)
+				.ToListAsync();
+
+			// Search for reviews made by followed users, include the user to get their username, and order by newest first
+			var feed = await _db.Reviews
+				.Include(r => r.User)
+				.Where(r => followingIds.Contains(r.UserId))
+				.OrderByDescending(r => r.CreatedAt)
+				.Take(20)
+				.Select(r => new {
+					Id = r.Id,
+					Username = r.User.Username,
+					SpotifyItemId = r.SpotifyItemId,
+					ItemType = r.ItemType,
+					Rating = r.Rating,
+					Comment = r.Comment,
+					CreatedAt = r.CreatedAt
+				})
+				.ToListAsync();
+
+			return Ok(feed);
+		}
+	}
+}
