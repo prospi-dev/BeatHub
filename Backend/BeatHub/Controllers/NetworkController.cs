@@ -88,22 +88,48 @@ namespace BeatHub.Controllers
 				.Select(uf => uf.FollowingId)
 				.ToListAsync();
 
-			// Search for reviews made by followed users, include the user to get their username, and order by newest first
-			var feed = await _db.Reviews
+			// Get the latest 20 reviews from followed users, we map them to an anonymous object that includes the username for easier display in the feed
+			var reviews = await _db.Reviews
 				.Include(r => r.User)
 				.Where(r => followingIds.Contains(r.UserId))
 				.OrderByDescending(r => r.CreatedAt)
 				.Take(20)
 				.Select(r => new {
+					ActivityType = "REVIEW",
 					Id = r.Id,
 					Username = r.User.Username,
 					SpotifyItemId = r.SpotifyItemId,
 					ItemType = r.ItemType,
-					Rating = r.Rating,
+					Rating = (int?)r.Rating, // Nullable int because favorites won't have a rating
 					Comment = r.Comment,
 					CreatedAt = r.CreatedAt
 				})
 				.ToListAsync();
+
+			// Get the latest 20 favorites from followed users, we map them to the same structure as reviews for easier concatenation
+			var favorites = await _db.Favorites
+				.Include(f => f.User)
+				.Where(f => followingIds.Contains(f.UserId))
+				.OrderByDescending(f => f.AddedAt)
+				.Take(20)
+				.Select(f => new {
+					ActivityType = "FAVORITE",
+					Id = f.Id,
+					Username = f.User.Username,
+					SpotifyItemId = f.SpotifyItemId,
+					ItemType = f.ItemType,
+					Rating = (int?)null, // Favorites don't have a rating
+					Comment = (string)null, // Favorites don't have a comment
+					CreatedAt = f.AddedAt // We map AddedAt to CreatedAt for easier sorting later
+				})
+				.ToListAsync();
+
+			// Sort both reviews and favorites by CreatedAt (or AddedAt) and take the top 20 overall
+			var feed = reviews.Concat(favorites)
+				.OrderByDescending(a => a.CreatedAt)
+				.Take(20)
+				.ToList();
+
 
 			return Ok(feed);
 		}
