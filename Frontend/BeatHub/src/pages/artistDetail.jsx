@@ -27,6 +27,10 @@ const artistDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
+  const handleOpenReviewModal = useCallback(() => {
+    setIsReviewModalOpen(true);
+  }, []);
+
   const handleReviewSuccess = () => {
     setRefreshReviewsTrigger(prev => prev + 1);
   };
@@ -282,7 +286,7 @@ const artistDetail = () => {
                 </>
               }
               existingUserReview={existingUserReview}
-              onReviewClick={() => setIsReviewModalOpen(true)}
+              onReviewClick={handleOpenReviewModal}
             />
             <div className="container mx-auto px-4 pb-8">
               {renderTabNavigation()}

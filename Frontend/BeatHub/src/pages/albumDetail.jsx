@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { getAlbumDetails, getMultipleArtistsDetails } from '../api/spotifyService'
 import { FaHeart, FaClock } from 'react-icons/fa'
 import { IoMusicalNote } from 'react-icons/io5'
@@ -28,6 +28,10 @@ const albumDetail = () => {
 
     const { id } = useParams()
     const navigate = useNavigate()
+
+    const handleOpenReviewModal = useCallback(() => {
+        setIsReviewModalOpen(true);
+    }, []);
 
     const handleReviewSuccess = () => {
         setRefreshReviewsTrigger(prev => prev + 1);
@@ -102,7 +106,7 @@ const albumDetail = () => {
                                 </>
                             }
                             existingUserReview={existingUserReview}
-                            onReviewClick={() => setIsReviewModalOpen(true)}
+                            onReviewClick={handleOpenReviewModal}
                         />
 
                         {/* UNROLLING COMPONENTS: The entire grid goes directly here */}

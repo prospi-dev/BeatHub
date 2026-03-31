@@ -26,6 +26,10 @@ const TrackDetail = () => {
     const { id } = useParams()
     const navigate = useNavigate()
 
+    const handleOpenReviewModal = useCallback(() => {
+        setIsReviewModalOpen(true);
+    }, []);
+
     const handleReviewSuccess = () => {
         setRefreshReviewsTrigger(prev => prev + 1);
     };
@@ -109,7 +113,7 @@ const TrackDetail = () => {
                                 </div>
                             }
                             existingUserReview={existingUserReview}
-                            onReviewClick={() => setIsReviewModalOpen(true)}
+                            onReviewClick={handleOpenReviewModal}
                         />
 
                         {/* UNROLLED MAIN CONTENT */}

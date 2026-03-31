@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaShare, FaStar } from 'react-icons/fa'
 import { useAppAuth } from '../../hooks/useAppAuth'
@@ -6,7 +6,7 @@ import FavoriteButton from '../common/FavoriteButton'
 // Importamos el COMPONENTE por defecto, NO el hook
 import Color from 'color-thief-react'
 
-const HeroSection = ({
+const HeroSection = memo(({
     itemId,         
     type,           
     title,          
@@ -74,6 +74,6 @@ const HeroSection = ({
             }}
         </Color>
     )
-}
+})
 
 export default HeroSection;
