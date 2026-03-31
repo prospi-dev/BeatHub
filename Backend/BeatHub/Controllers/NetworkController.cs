@@ -7,131 +7,132 @@ using System.Security.Claims;
 
 namespace BeatHub.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	[Authorize]
-	public class NetworkController : ControllerBase
-	{
-		private readonly AppDbContext _db;
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
 
-		public NetworkController(AppDbContext db)
-		{
-			_db = db;
-		}
+    public class NetworkController : ControllerBase
+    {
+        private readonly AppDbContext _db;
 
-		// POST: api/network/follow/{username}
-		[HttpPost("follow/{username}")]
-		public async Task<IActionResult> FollowUser(string username)
-		{
-			var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-			{
-				return Unauthorized("Invalid user token.");
-			}
+        public NetworkController(AppDbContext db)
+        {
+            _db = db;
+        }
 
-			var targetUser = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        // POST: api/network/follow/{username}
+        [HttpPost("follow/{username}")]
+        public async Task<IActionResult> FollowUser(string username)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("Invalid user token.");
+            }
 
-			if (targetUser == null) return NotFound("User not found.");
-			if (userId == targetUser.Id) return BadRequest("You cannot follow yourself.");
+            var targetUser = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
 
-			var alreadyFollowing = await _db.UserFollows
-				.AnyAsync(uf => uf.FollowerId == userId && uf.FollowingId == targetUser.Id);
+            if (targetUser == null) return NotFound("User not found.");
+            if (userId == targetUser.Id) return BadRequest("You cannot follow yourself.");
 
-			if (alreadyFollowing) return Ok(new { message = "Already following" });
+            var alreadyFollowing = await _db.UserFollows
+                .AnyAsync(uf => uf.FollowerId == userId && uf.FollowingId == targetUser.Id);
 
-			_db.UserFollows.Add(new UserFollow
-			{
-				FollowerId = userId,
-				FollowingId = targetUser.Id
-			});
-			await _db.SaveChangesAsync();
+            if (alreadyFollowing) return Ok(new { message = "Already following" });
 
-			return Ok(new { message = $"You are now following {username}" });
-		}
+            _db.UserFollows.Add(new UserFollow
+            {
+                FollowerId = userId,
+                FollowingId = targetUser.Id
+            });
+            await _db.SaveChangesAsync();
 
-		// DELETE: api/network/unfollow/{username}
-		[HttpDelete("unfollow/{username}")]
-		public async Task<IActionResult> UnfollowUser(string username)
-		{
-			var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-			{
-				return Unauthorized("Invalid user token.");
-			}
-			var targetUser = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return Ok(new { message = $"You are now following {username}" });
+        }
 
-			if (targetUser == null) return NotFound("User not found.");
+        // DELETE: api/network/unfollow/{username}
+        [HttpDelete("unfollow/{username}")]
+        public async Task<IActionResult> UnfollowUser(string username)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("Invalid user token.");
+            }
+            var targetUser = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
 
-			var follow = await _db.UserFollows
-				.FirstOrDefaultAsync(uf => uf.FollowerId == userId && uf.FollowingId == targetUser.Id);
+            if (targetUser == null) return NotFound("User not found.");
 
-			if (follow == null) return Ok(new { message = "Not following" });
+            var follow = await _db.UserFollows
+                .FirstOrDefaultAsync(uf => uf.FollowerId == userId && uf.FollowingId == targetUser.Id);
 
-			_db.UserFollows.Remove(follow);
-			await _db.SaveChangesAsync();
+            if (follow == null) return Ok(new { message = "Not following" });
 
-			return Ok(new { message = $"Unfollowed {username}" });
-		}
+            _db.UserFollows.Remove(follow);
+            await _db.SaveChangesAsync();
 
-		// GET: api/network/feed
-		[HttpGet("feed")]
-		public async Task<IActionResult> GetActivityFeed()
-		{
-			var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-			{
-				return Unauthorized("Invalid user token.");
-			}
+            return Ok(new { message = $"Unfollowed {username}" });
+        }
 
-			var followingIds = await _db.UserFollows
-				.Where(uf => uf.FollowerId == userId)
-				.Select(uf => uf.FollowingId)
-				.ToListAsync();
+        // GET: api/network/feed
+        [HttpGet("feed")]
+        public async Task<IActionResult> GetActivityFeed()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("Invalid user token.");
+            }
 
-			// Get the latest 20 reviews from followed users, we map them to an anonymous object that includes the username for easier display in the feed
-			var reviews = await _db.Reviews
-				.Include(r => r.User)
-				.Where(r => followingIds.Contains(r.UserId))
-				.OrderByDescending(r => r.CreatedAt)
-				.Take(20)
-				.Select(r => new {
-					ActivityType = "REVIEW",
-					Id = r.Id,
-					Username = r.User.Username,
-					SpotifyItemId = r.SpotifyItemId,
-					ItemType = r.ItemType,
-					Rating = (int?)r.Rating, // Nullable int because favorites won't have a rating
-					Comment = r.Comment,
-					CreatedAt = r.CreatedAt
-				})
-				.ToListAsync();
+            var followingIds = await _db.UserFollows
+                .Where(uf => uf.FollowerId == userId)
+                .Select(uf => uf.FollowingId)
+                .ToListAsync();
 
-			// Get the latest 20 favorites from followed users, we map them to the same structure as reviews for easier concatenation
-			var favorites = await _db.Favorites
-				.Include(f => f.User)
-				.Where(f => followingIds.Contains(f.UserId))
-				.OrderByDescending(f => f.AddedAt)
-				.Take(20)
-				.Select(f => new {
-					ActivityType = "FAVORITE",
-					Id = f.Id,
-					Username = f.User.Username,
-					SpotifyItemId = f.SpotifyItemId,
-					ItemType = f.ItemType,
-					Rating = (int?)null, // Favorites don't have a rating
-					Comment = (string)null, // Favorites don't have a comment
-					CreatedAt = f.AddedAt // We map AddedAt to CreatedAt for easier sorting later
-				})
-				.ToListAsync();
+            // Get the latest 20 reviews from followed users, we map them to an anonymous object that includes the username for easier display in the feed
+            var reviews = await _db.Reviews
+                .Include(r => r.User)
+                .Where(r => followingIds.Contains(r.UserId))
+                .OrderByDescending(r => r.CreatedAt)
+                .Take(20)
+                .Select(r => new {
+                    ActivityType = "REVIEW",
+                    Id = r.Id,
+                    Username = r.User.Username,
+                    SpotifyItemId = r.SpotifyItemId,
+                    ItemType = r.ItemType,
+                    Rating = (int?)r.Rating, // Nullable int because favorites won't have a rating
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt
+                })
+                .ToListAsync();
 
-			// Sort both reviews and favorites by CreatedAt (or AddedAt) and take the top 20 overall
-			var feed = reviews.Concat(favorites)
-				.OrderByDescending(a => a.CreatedAt)
-				.Take(20)
-				.ToList();
+            // Get the latest 20 favorites from followed users, we map them to the same structure as reviews for easier concatenation
+            var favorites = await _db.Favorites
+                .Include(f => f.User)
+                .Where(f => followingIds.Contains(f.UserId))
+                .OrderByDescending(f => f.AddedAt)
+                .Take(20)
+                .Select(f => new {
+                    ActivityType = "FAVORITE",
+                    Id = f.Id,
+                    Username = f.User.Username,
+                    SpotifyItemId = f.SpotifyItemId,
+                    ItemType = f.ItemType,
+                    Rating = (int?)null, // Favorites don't have a rating
+                    Comment = (string)null, // Favorites don't have a comment
+                    CreatedAt = f.AddedAt // We map AddedAt to CreatedAt for easier sorting later
+                })
+                .ToListAsync();
+
+            // Sort both reviews and favorites by CreatedAt (or AddedAt) and take the top 20 overall
+            var feed = reviews.Concat(favorites)
+                .OrderByDescending(a => a.CreatedAt)
+                .Take(20)
+                .ToList();
 
 
-			return Ok(feed);
-		}
-	}
+            return Ok(feed);
+        }
+    }
 }

@@ -6,7 +6,7 @@ import { FaMusic, FaSpinner } from 'react-icons/fa'
 const RegisterPage = () => {
     const navigate = useNavigate()
 
-    // El estado ahora incluye 'username' acorde a tu backend
+    // State now includes 'username' to match your backend
     const [form, setForm] = useState({ username: '', email: '', password: '' })
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -28,7 +28,7 @@ const RegisterPage = () => {
         try {
             // Llamada a la API de registro
             await registerApi(form)
-            // Si el registro es exitoso, redirigimos al login para que inicie sesión
+            // If signup is successful, redirect to login so the user can sign in
             navigate('/login')
         } catch (err) {
             // Manejo de errores que vengan del backend (ej: "El correo ya existe")
@@ -103,12 +103,12 @@ const RegisterPage = () => {
                             placeholder="••••••••"
                             value={form.password}
                             onChange={handleChange}
-                            minLength={6} // Buena práctica para validación frontend
+                            minLength={6} // Good practice for frontend validation
                             required
                         />
                     </div>
 
-                    {/* Botón Submit */}
+                    {/* Submit button */}
                     <button
                         type="submit"
                         disabled={loading}

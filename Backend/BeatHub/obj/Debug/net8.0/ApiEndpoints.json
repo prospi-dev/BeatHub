@@ -90,6 +90,48 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "BeatHub.Controllers.NetworkController",
+    "Method": "GetActivityFeed",
+    "RelativePath": "api/Network/feed",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BeatHub.Controllers.NetworkController",
+    "Method": "FollowUser",
+    "RelativePath": "api/Network/follow/{username}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BeatHub.Controllers.NetworkController",
+    "Method": "UnfollowUser",
+    "RelativePath": "api/Network/unfollow/{username}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "BeatHub.Controllers.ReviewsController",
     "Method": "CreateReview",
     "RelativePath": "api/Reviews",

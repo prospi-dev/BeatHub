@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { getNewReleases, getPopularArtists, getTopTracks, search } from '../api/spotifyService.js';
-
+import { getActivityFeed } from '../api/userFollowers.js';
 export const useCatalogData = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -30,6 +30,27 @@ export const useCatalogData = () => {
         }
     };
 
+    const hydrateFeed = async (rawFeed) => {
+        return await Promise.all(rawFeed.map(async (item) => {
+            try {
+                let spotifyData = null;
+                if (item.itemType === 'track') {
+                    const res = await getTrackDetails(item.spotifyItemId);
+                    spotifyData = { name: res.track.name, image: res.track.album.images[0]?.url, artist: res.track.artists[0]?.name };
+                } else if (item.itemType === 'album') {
+                    const res = await getAlbumDetails(item.spotifyItemId);
+                    spotifyData = { name: res.album.name, image: res.album.images[0]?.url, artist: res.album.artists[0]?.name };
+                } else if (item.itemType === 'artist') {
+                    const res = await getArtistsDetails(item.spotifyItemId);
+                    spotifyData = { name: res.artist.name, image: res.artist.images[0]?.url, artist: 'Artist' };
+                }
+                return { ...item, spotifyData };
+            } catch (e) {
+                return { ...item, spotifyData: { name: 'Unknown', image: '/default-album.png', artist: 'Unknown' } };
+            }
+        }));
+    };
+
     const fetchInitialData = useCallback(async (type, isSearchActive, searchQuery, sortBy) => {
         try {
             setLoading(true);
@@ -37,7 +58,13 @@ export const useCatalogData = () => {
             let result = [];
             const currentOffset = 0;
 
-            if (isSearchActive && searchQuery.trim()) {
+            if (type === 'feed') {
+                const rawFeed = await getActivityFeed();
+                result = await hydrateFeed(rawFeed || []);
+                setData(result);
+                setHasMore(false); 
+            }
+            else if (isSearchActive && searchQuery.trim()) {
                 const searchResult = await search(searchQuery, type, currentOffset);
                 switch (type) {
                     case 'albums': result = searchResult.albums?.items || []; break;
@@ -62,12 +89,14 @@ export const useCatalogData = () => {
         } catch (err) {
             console.error(`Error fetching ${type}:`, err);
             setError(`Failed to load ${type}`);
+            setData([]);
         } finally {
             setLoading(false);
         }
     }, []);
 
     const loadMoreData = useCallback(async (type, isSearchActive, searchQuery, sortBy) => {
+        if (type === 'feed') return; // Feed is not paginated for now, so we disable "Load More" for it
         const nextPage = page + 1;
         setPage(nextPage);
         setLoadingMore(true);
