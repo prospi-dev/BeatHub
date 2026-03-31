@@ -14,6 +14,7 @@ namespace BeatHub.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<FavoriteItem> Favorites { get; set; }
 
+        public DbSet<UserFollow> UserFollows { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -31,6 +32,21 @@ namespace BeatHub.Data
                 .WithMany(u => u.Favorites)
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserFollow>()
+                .HasKey(uf => new { uf.FollowerId, uf.FollowingId });
+
+            modelBuilder.Entity<UserFollow>()
+                .HasOne(uf => uf.Follower)
+                .WithMany(u => u.Following)
+                .HasForeignKey(uf => uf.FollowerId)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            modelBuilder.Entity<UserFollow>()
+                .HasOne(uf => uf.Following)
+                .WithMany(u => u.Followers)
+                .HasForeignKey(uf => uf.FollowingId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

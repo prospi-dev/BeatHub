@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { FaShare, FaStar } from 'react-icons/fa'
 import { useAppAuth } from '../../hooks/useAppAuth'
 import FavoriteButton from '../common/FavoriteButton'
-// Importamos el COMPONENTE por defecto, NO el hook
+// Import the default COMPONENT, NOT the hook
 import Color from 'color-thief-react'
 
 const HeroSection = memo(({

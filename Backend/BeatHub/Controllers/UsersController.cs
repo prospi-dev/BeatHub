@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BeatHub.Controllers
 {
@@ -10,7 +11,6 @@ namespace BeatHub.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
-
         public UsersController(AppDbContext context)
         {
             _context = context;
@@ -31,6 +31,17 @@ namespace BeatHub.Controllers
                 return NotFound(new { message = "User not found." });
             }
 
+            bool isFollowing = false;
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int loggedUserId))
+            {
+                isFollowing = await _context.UserFollows
+                    .AnyAsync(uf => uf.FollowerId == loggedUserId && uf.FollowingId == user.Id);
+            }
+
+
             // We map it to an anonymous object 
             // IMPORTANT: For security reasons, we do not return the email address or password hash.
             var userProfile = new
@@ -39,6 +50,7 @@ namespace BeatHub.Controllers
                 JoinedAt = user.Reviews.FirstOrDefault()?.CreatedAt ?? DateTime.UtcNow, 
                 TotalReviews = user.Reviews.Count,
                 TotalFavorites = user.Favorites.Count,
+                isFollowing = isFollowing,
                 Reviews = user.Reviews.OrderByDescending(r => r.CreatedAt).Select(r => new
                 {
                     r.Id,
@@ -53,7 +65,8 @@ namespace BeatHub.Controllers
                     f.SpotifyItemId,
                     f.ItemType,
                     f.AddedAt
-                })
+                }),
+                
             };
 
             return Ok(userProfile);

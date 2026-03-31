@@ -9,6 +9,7 @@ export const useProfile = (username, debouncedSearch, favFilter) => {
     const [profile, setProfile] = useState(null);
     const [rawReviews, setRawReviews] = useState([]);
     const [rawFavorites, setRawFavorites] = useState([]);
+const [initialIsFollowing, setInitialIsFollowing] = useState(false);
 
     // Hydrated data with Spotify info
     const [enrichedReviews, setEnrichedReviews] = useState([]);
@@ -71,6 +72,7 @@ export const useProfile = (username, debouncedSearch, favFilter) => {
                 setLoadingProfile(true);
                 const data = await getUserProfile(username);
                 setProfile(data);
+                setInitialIsFollowing(data.isFollowing || false);
                 setRawReviews(data.reviews || []);
                 setRawFavorites(data.favorites || []);
                 setError(null);
@@ -175,6 +177,7 @@ export const useProfile = (username, debouncedSearch, favFilter) => {
         loadingReviews, loadingFavs,
         reviewsPage, setReviewsPage,
         favsPage, setFavsPage,
-        hasMoreReviews, hasMoreFavorites
+        hasMoreReviews, hasMoreFavorites,
+        initialIsFollowing
     };
 };

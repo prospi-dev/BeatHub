@@ -18,8 +18,10 @@ public class User
     public string Email { get; set; } = string.Empty;
 
     [Required]
-    [JsonIgnore] 
+    [JsonIgnore]
     public string PasswordHash { get; set; } = string.Empty;
+    public ICollection<UserFollow> Followers { get; set; } = new List<UserFollow>();
+    public ICollection<UserFollow> Following { get; set; } = new List<UserFollow>();
 
     // Navigation Properties
     public ICollection<Review> Reviews { get; set; } = new List<Review>();

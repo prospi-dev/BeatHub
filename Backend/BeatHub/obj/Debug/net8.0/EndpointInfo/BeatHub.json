@@ -154,6 +154,83 @@
         }
       }
     },
+    "/api/Network/follow/{username}": {
+      "post": {
+        "tags": [
+          "Network"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Network/unfollow/{username}": {
+      "delete": {
+        "tags": [
+          "Network"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Network/feed": {
+      "get": {
+        "tags": [
+          "Network"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Network/search": {
+      "get": {
+        "tags": [
+          "Network"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Reviews/item/{spotifyItemId}": {
       "get": {
         "tags": [
@@ -727,6 +804,9 @@
     },
     {
       "name": "Favorites"
+    },
+    {
+      "name": "Network"
     },
     {
       "name": "Reviews"

@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage.jsx'
 import AuthRoute from './components/router/AuthRoute.jsx'
 import RegisterPage from './pages/registerPage.jsx'
 import UserProfile from './pages/UserProfile.jsx'
-
+import FeedPage from './components/cards/FeedView.jsx'
 export default function App() {
     return (
         <Routes>
@@ -20,6 +20,7 @@ export default function App() {
             <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
             <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
             <Route path="/user/:username" element={<UserProfile />} />
+            <Route path="/feed" element={<FeedPage />} />
         </Routes>
     )
 }

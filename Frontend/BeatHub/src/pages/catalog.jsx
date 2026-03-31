@@ -2,14 +2,19 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { CiGrid41, CiFilter, CiSearch } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
+import { FaHeart, FaStar, FaMusic, FaCompactDisc, FaMicrophone, FaUserFriends } from 'react-icons/fa';
 
 import AlbumCard from '../components/cards/AlbumCard.jsx';
 import ArtistCard from '../components/cards/ArtistCard.jsx';
 import TrackCard from '../components/cards/TrackCard.jsx';
+import FeedView from '../components/cards/FeedView.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 import Header from '../components/layout/Header.jsx';
 import { useCatalogData } from '../hooks/useCatalogData.js';
+import { useAppAuth } from '../hooks/useAppAuth.js';
+import { getActivityFeed, searchUsers } from '../api/network';
+import { useDebounce } from '../hooks/useDebounce.js';
 
 const EmptyState = ({ type, searchQuery, handleClearSearch }) => (
     <div className="text-center py-16">
@@ -31,12 +36,14 @@ const EmptyState = ({ type, searchQuery, handleClearSearch }) => (
     </div>
 );
 
-const catalog = () => {
+const Catalog = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);
     const type = searchParams.get('type') || 'albums';
     const searchQuery = searchParams.get('search') || '';
+
+    const { user } = useAppAuth();
 
     // UI States
     const [searchInput, setSearchInput] = useState(searchQuery);
@@ -44,11 +51,15 @@ const catalog = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [sortBy, setSortBy] = useState('relevance');
     const [gridColumns, setGridColumns] = useState(4);
+    const [userSearchResults, setUserSearchResults] = useState([]);
+    const [isSearchingUsers, setIsSearchingUsers] = useState(false);
+
+    const debouncedFeedSearch = useDebounce(searchInput, 500);
 
     // Custom Hook to handle data
-    const { 
-        data, loading, error, hasMore, loadingMore, 
-        fetchInitialData, loadMoreData 
+    const {
+        data, loading, error, hasMore, loadingMore,
+        fetchInitialData, loadMoreData
     } = useCatalogData();
 
     const debounce = useCallback((func, delay) => {
@@ -70,9 +81,36 @@ const catalog = () => {
         [location.search, navigate]
     );
 
+    // Effect to handle user search in feed
+    useEffect(() => {
+        if (type !== 'feed') return;
+
+        const searchForUsers = async () => {
+            if (!debouncedFeedSearch.trim()) {
+                setUserSearchResults([]);
+                setIsSearchingUsers(false);
+                return;
+            }
+
+            try {
+                setIsSearchingUsers(true);
+                const results = await searchUsers(debouncedFeedSearch);
+                setUserSearchResults(results);
+            } catch (err) {
+                console.error("Error searching users:", err);
+            } finally {
+                setIsSearchingUsers(false);
+            }
+        };
+
+        searchForUsers();
+    }, [debouncedFeedSearch, type]);
+
     // Main effect to load data when type, search or sort changes
     useEffect(() => {
-        fetchInitialData(type, isSearchActive, searchQuery, sortBy);
+        if (type !== 'feed') {
+            fetchInitialData(type, isSearchActive, searchQuery, sortBy);
+        }
     }, [type, isSearchActive, searchQuery, sortBy, fetchInitialData]);
 
     // Effect to handle search input
@@ -91,6 +129,20 @@ const catalog = () => {
         }
     }, [searchInput, searchQuery, debouncedSearch, location.search, navigate]);
 
+    const handleTypeChange = (newType) => {
+        // If user tries to access the feed without being logged in, redirect to login page
+        if (newType === 'feed' && !user) {
+            navigate('/login');
+            return;
+        }
+        setIsSearchActive(false);
+        setSearchInput('');
+        setSortBy('relevance');
+        const newSearchParams = new URLSearchParams();
+        newSearchParams.set('type', newType);
+        navigate(`/catalog?${newSearchParams.toString()}`);
+    };
+
     const handleClearSearch = () => {
         setSearchInput('');
         setIsSearchActive(false);
@@ -107,6 +159,40 @@ const catalog = () => {
     }, [data.length, type, searchQuery]);
 
     const renderContent = () => {
+        // IF ITS FEED, WE DON'T USE EITHER THE GRID OF THE SORTING
+        if (type === 'feed') {
+            if (searchInput.trim()) {
+                return (
+                    <div className="max-w-2xl mx-auto space-y-4">
+                        <h2 className="text-xl font-bold mb-4">User Results for "{searchInput}"</h2>
+                        {isSearchingUsers ? (
+                            <LoadingSpinner message="Searching users..." />
+                        ) : userSearchResults.length === 0 ? (
+                            <div className="text-center py-12 bg-gray-800/30 rounded-3xl border border-gray-700/50">
+                                <p className="text-gray-400">No users found with that name.</p>
+                            </div>
+                        ) : (
+                            userSearchResults.map((u) => (
+                                <Link
+                                    key={u.username}
+                                    to={`/user/${u.username}`}
+                                    className="flex items-center gap-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700/50 rounded-2xl p-4 transition-colors"
+                                >
+                                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-xl text-white shadow-sm shrink-0">
+                                        {u.username.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="font-bold text-lg">{u.username}</span>
+                                </Link>
+                            ))
+                        )}
+                    </div>
+                );
+            }
+
+            // Si NO hay búsqueda, mostramos el feed normal
+            return <FeedView />;
+        }
+
         const gridClasses = {
             3: 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3',
             4: 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4',
@@ -122,6 +208,7 @@ const catalog = () => {
                 {data.map((item) => {
                     const cardProps = { key: item.id, [type.slice(0, -1)]: item, gridColumns };
                     switch (type) {
+                        case 'feed': return <FeedView />;
                         case 'albums': return <AlbumCard {...cardProps} />;
                         case 'artists': return <ArtistCard {...cardProps} />;
                         case 'tracks': return <TrackCard {...cardProps} />;
@@ -158,18 +245,23 @@ const catalog = () => {
         <>
             <nav className='relative flex border-t border-gray-700 min-h-11'>
                 <div className='absolute left-1/2 -translate-x-1/2 flex justify-center items-center'>
-                    {['albums', 'artists', 'tracks'].map((tabType) => (
-                        <Link
-                            key={tabType}
-                            to={`/catalog?type=${tabType}${searchQuery ? `&search=${searchQuery}` : ''}`}
-                            className={`px-6 py-3 text-sm font-medium capitalize transition-all ${type === tabType
-                                ? 'text-orange-500 border-b-2 border-orange-500 bg-gray-800/50'
-                                : 'text-gray-400 hover:text-white hover:bg-gray-800/30'
-                                }`}
-                        >
-                            {tabType}
-                        </Link>
-                    ))}
+                    {['feed', 'albums', 'artists', 'tracks'].map((tabType) => {
+                        const targetUrl = tabType === 'feed' && !user
+                            ? '/login'
+                            : `/catalog?type=${tabType}${searchQuery && tabType !== 'feed' ? `&search=${searchQuery}` : ''}`;
+                        return (
+                            <Link
+                                key={tabType}
+                                to={targetUrl}
+                                className={`px-6 py-3 text-sm font-medium capitalize transition-all ${type === tabType
+                                    ? 'text-orange-500 border-b-2 border-orange-500 bg-gray-800/50'
+                                    : 'text-gray-400 hover:text-white hover:bg-gray-800/30'
+                                    }`}
+                            >
+                                {tabType}
+                            </Link>
+                        )
+                    })}
                 </div>
                 <div className='hidden md:flex items-center gap-3 ml-auto mr-5'>
                     <CiGrid41 className='text-lg text-gray-400' />
@@ -224,7 +316,9 @@ const catalog = () => {
             <Header centerContent={searchBar} bottomContent={navigationTabs} />
 
             <main className='container mx-auto px-4 py-6'>
-                {loading ? (
+                {type === 'feed' ? (
+                    renderContent()
+                ) : loading ? (
                     <LoadingSpinner message={`Loading ${type}...`} />
                 ) : error ? (
                     <div className="text-center py-16">
@@ -264,4 +358,4 @@ const catalog = () => {
     );
 };
 
-export default catalog;
+export default Catalog;

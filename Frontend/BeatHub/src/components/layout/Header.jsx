@@ -4,11 +4,11 @@ import BeatHubLogo from '../common/BeatHubLogo';
 import { FaArrowLeft, FaUser } from 'react-icons/fa';
 import { useAppAuth } from '../../hooks/useAppAuth';
 
-const Header = ({ 
-    showBackButton = false, 
-    onBackClick, 
-    centerContent = null, 
-    bottomContent = null  
+const Header = ({
+    showBackButton = false,
+    onBackClick,
+    centerContent = null,
+    bottomContent = null
 }) => {
     const { user, handleLogout } = useAppAuth();
 
@@ -37,10 +37,8 @@ const Header = ({
                 <div className="flex items-center gap-3 ml-auto">
                     {user ? (
                         <div className="flex items-center gap-4">
-                            <Link to={`/user/${user.username}`} className="text-gray-400 text-base hover:text-white transition">
-                                <span className="text-white font-medium">
-                                    <FaUser className="text-2xl text-orange-500" />
-                                </span>
+                            <Link to={`/user/${user.username}`} className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-lg shadow-sm">
+                                {user.username.charAt(0).toUpperCase()}
                             </Link>
                             <button
                                 onClick={handleLogout}
