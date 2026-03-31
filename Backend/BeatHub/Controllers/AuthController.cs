@@ -48,7 +48,8 @@ namespace BeatHub.Controllers
             {
                 Token = token,
                 Username = user.Username,
-                Email = user.Email
+                Email = user.Email,
+                AvatarUrl = user.AvatarUrl
             });
         }
 
@@ -66,7 +67,8 @@ namespace BeatHub.Controllers
             {
                 Token = token,
                 Username = user.Username,
-                Email = user.Email
+                Email = user.Email,
+                AvatarUrl = user.AvatarUrl
             });
         }
     }
