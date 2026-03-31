@@ -47,6 +47,7 @@ namespace BeatHub.Controllers
             var userProfile = new
             {
                 Username = user.Username,
+                AvatarUrl = user.AvatarUrl,
                 JoinedAt = user.Reviews.FirstOrDefault()?.CreatedAt ?? DateTime.UtcNow, 
                 TotalReviews = user.Reviews.Count,
                 TotalFavorites = user.Favorites.Count,

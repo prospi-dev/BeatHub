@@ -1,4 +1,5 @@
-﻿using BeatHub.Data;
+﻿using Azure.Core;
+using BeatHub.Data;
 using BeatHub.DTOs;
 using BeatHub.DTOs.Auth;
 using BeatHub.Models;
@@ -34,7 +35,8 @@ namespace BeatHub.Controllers
             {
                 Username = dto.Username,
                 Email = dto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                AvatarUrl = $"https://api.dicebear.com/7.x/bottts/svg?seed={dto.Username}"
             };
 
             _db.Users.Add(user);
