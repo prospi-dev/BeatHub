@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BeatHub")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d03444bff382c1840c018599a3a0f42ab0ffadea")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b22ac2397be42b782b2e001efea86674da1e3d6d")]
 [assembly: System.Reflection.AssemblyProductAttribute("BeatHub")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BeatHub")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

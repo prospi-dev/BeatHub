@@ -5,6 +5,7 @@ using BeatHub.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using BeatHub.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
