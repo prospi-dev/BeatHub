@@ -24,9 +24,17 @@ const getItemIcon = (type) => {
 // --- UI COMPONENTS ---
 const ProfileHeader = ({ profile, searchQuery, setSearchQuery, isOwnProfile, isFollowing, handleFollowToggle, followLoading }) => (
     <div className="bg-gray-800/50 border border-gray-700 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl mb-12 relative overflow-hidden">
-        <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-md shrink-0 text-5xl z-10">
-            {profile.username.charAt(0).toUpperCase()}
-        </div>
+        {profile.avatarUrl ? (
+            <img
+                src={profile.avatarUrl}
+                alt={`${profile.username}'s avatar`}
+                className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 border-gray-800 shadow-md shrink-0 z-10 bg-gray-900"
+            />
+        ) : (
+            <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-md shrink-0 text-5xl z-10">
+                {profile.username.charAt(0).toUpperCase()}
+            </div>
+        )}
 
         <div className="text-center md:text-left flex-1 z-10">
             <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
