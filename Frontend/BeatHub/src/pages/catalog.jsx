@@ -13,6 +13,8 @@ import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 import Header from '../components/layout/Header.jsx';
 import { useCatalogData } from '../hooks/useCatalogData.js';
 import { useAppAuth } from '../hooks/useAppAuth.js';
+import { getActivityFeed, searchUsers } from '../api/network';
+import { useDebounce } from '../hooks/useDebounce.js';
 
 const EmptyState = ({ type, searchQuery, handleClearSearch }) => (
     <div className="text-center py-16">
@@ -49,6 +51,10 @@ const Catalog = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [sortBy, setSortBy] = useState('relevance');
     const [gridColumns, setGridColumns] = useState(4);
+    const [userSearchResults, setUserSearchResults] = useState([]);
+    const [isSearchingUsers, setIsSearchingUsers] = useState(false);
+
+    const debouncedFeedSearch = useDebounce(searchInput, 500);
 
     // Custom Hook to handle data
     const {
@@ -74,6 +80,31 @@ const Catalog = () => {
         }, 500),
         [location.search, navigate]
     );
+
+    // Effect to handle user search in feed
+    useEffect(() => {
+        if (type !== 'feed') return;
+
+        const searchForUsers = async () => {
+            if (!debouncedFeedSearch.trim()) {
+                setUserSearchResults([]);
+                setIsSearchingUsers(false);
+                return;
+            }
+
+            try {
+                setIsSearchingUsers(true);
+                const results = await searchUsers(debouncedFeedSearch);
+                setUserSearchResults(results);
+            } catch (err) {
+                console.error("Error searching users:", err);
+            } finally {
+                setIsSearchingUsers(false);
+            }
+        };
+
+        searchForUsers();
+    }, [debouncedFeedSearch, type]);
 
     // Main effect to load data when type, search or sort changes
     useEffect(() => {
@@ -130,6 +161,35 @@ const Catalog = () => {
     const renderContent = () => {
         // IF ITS FEED, WE DON'T USE EITHER THE GRID OF THE SORTING
         if (type === 'feed') {
+            if (searchInput.trim()) {
+                return (
+                    <div className="max-w-2xl mx-auto space-y-4">
+                        <h2 className="text-xl font-bold mb-4">User Results for "{searchInput}"</h2>
+                        {isSearchingUsers ? (
+                            <LoadingSpinner message="Searching users..." />
+                        ) : userSearchResults.length === 0 ? (
+                            <div className="text-center py-12 bg-gray-800/30 rounded-3xl border border-gray-700/50">
+                                <p className="text-gray-400">No users found with that name.</p>
+                            </div>
+                        ) : (
+                            userSearchResults.map((u) => (
+                                <Link
+                                    key={u.username}
+                                    to={`/user/${u.username}`}
+                                    className="flex items-center gap-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700/50 rounded-2xl p-4 transition-colors"
+                                >
+                                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-xl text-white shadow-sm shrink-0">
+                                        {u.username.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="font-bold text-lg">{u.username}</span>
+                                </Link>
+                            ))
+                        )}
+                    </div>
+                );
+            }
+
+            // Si NO hay búsqueda, mostramos el feed normal
             return <FeedView />;
         }
 
@@ -168,7 +228,6 @@ const Catalog = () => {
                 placeholder={`Search ${type}...`}
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                disabled={type === 'feed'}
                 className='w-full pl-10 pr-10 py-2 bg-gray-800 border border-gray-600 rounded-full text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all'
             />
             {searchInput && (

@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useDebounce } from '../hooks/useDebounce';
 import { useAppAuth } from '../hooks/useAppAuth';
 import { useProfile } from '../hooks/useProfile';
-import { followUser, unfollowUser } from '../api/userFollowers';
+import { followUser, unfollowUser } from '../api/network';
 
 // --- UTILS ---
 const renderStars = (rating) => (

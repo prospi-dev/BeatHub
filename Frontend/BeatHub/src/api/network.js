@@ -14,3 +14,8 @@ export const getActivityFeed = async () => {
     const response = await axiosInstance.get(`/network/feed`);
     return response.data;
 };
+
+export const searchUsers = async (query) => {
+    const response = await axiosInstance.get(`/network/search?q=${encodeURIComponent(query)}`);
+    return response.data;
+};

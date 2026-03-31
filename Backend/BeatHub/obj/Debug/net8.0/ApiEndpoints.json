@@ -117,6 +117,22 @@
   },
   {
     "ContainingType": "BeatHub.Controllers.NetworkController",
+    "Method": "SearchUsers",
+    "RelativePath": "api/Network/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BeatHub.Controllers.NetworkController",
     "Method": "UnfollowUser",
     "RelativePath": "api/Network/unfollow/{username}",
     "HttpMethod": "DELETE",

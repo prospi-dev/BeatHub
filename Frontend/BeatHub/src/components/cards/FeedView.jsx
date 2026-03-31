@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getActivityFeed } from '../../api/userFollowers'; 
+import { getActivityFeed } from '../../api/network'; 
 import { getTrackDetails, getAlbumDetails, getArtistsDetails } from '../../api/spotifyService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { FaHeart, FaStar, FaMusic, FaCompactDisc, FaMicrophone, FaUserFriends } from 'react-icons/fa';
