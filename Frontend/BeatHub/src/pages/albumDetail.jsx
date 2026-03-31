@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import { getAlbumDetails, getMultipleArtistsDetails } from '../api/spotifyService'
 import { FaHeart, FaClock } from 'react-icons/fa'
@@ -90,9 +90,9 @@ const albumDetail = () => {
                             imageUrl={album?.images?.[0]?.url}
                             subtitleInfo={
                                 <>
-                                    <span className="font-bold text-white hover:underline cursor-pointer">
+                                    <Link to={`/artist/${album?.artists?.[0]?.id}`} className="font-bold text-white hover:underline cursor-pointer">
                                         {album?.artists?.map(artist => artist.name).join(', ')}
-                                    </span>
+                                    </Link>
                                     <span>•</span>
                                     <span>{new Date(album?.release_date).getFullYear()}</span>
                                     <span>•</span>

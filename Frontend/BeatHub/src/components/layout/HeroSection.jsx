@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaHeart, FaShare, FaStar } from 'react-icons/fa'
+import { FaShare, FaStar } from 'react-icons/fa'
 import { useAppAuth } from '../../hooks/useAppAuth'
-import { useColor } from 'color-thief-react'
-import { addFavorite, removeFavorite, getUserFavorites } from '../../api/favorites'
 import FavoriteButton from '../common/FavoriteButton'
+// Importamos el COMPONENTE por defecto, NO el hook
+import Color from 'color-thief-react'
+
 const HeroSection = ({
-    itemId,         // Spotify ID of the item
-    type,           // "ALBUM", "TRACK", "ARTIST" 
-    title,          // Name of the album/track/artist
-    imageUrl,       // URL of the main image
-    subtitleInfo,   // An array or string with bottom info (e.g: ["Artist", "2023", "12 tracks"])
-    existingUserReview, // For conditional button
-    onReviewClick   // What to do when the Review button is clicked
+    itemId,         
+    type,           
+    title,          
+    imageUrl,       
+    subtitleInfo,   
+    existingUserReview, 
+    onReviewClick   
 }) => {
     const navigate = useNavigate()
     const { user } = useAppAuth()
@@ -20,13 +21,7 @@ const HeroSection = ({
     const fallbackImage = `/default-${type?.toLowerCase() || 'album'}.png`
     const finalImageUrl = imageUrl || fallbackImage
 
-    const { data: dominantColor } = useColor(finalImageUrl, 'hex', {
-        crossOrigin: 'anonymous',
-    })
-
-    const bgColor = dominantColor || '#1f2937'
-
-    return (
+    const renderHeroContent = (bgColor) => (
         <div
             className="relative h-96 mb-8 transition-colors duration-1000"
             style={{ background: `linear-gradient(to bottom, ${bgColor} 0%, #111827 100%)` }}
@@ -37,6 +32,7 @@ const HeroSection = ({
                         src={finalImageUrl}
                         alt={title}
                         className="w-48 h-48 rounded-lg shadow-2xl hidden md:block object-cover"
+                        crossOrigin="anonymous"
                     />
                     <div className="mb-4">
                         <p className="text-sm text-gray-300 mb-1 font-bold tracking-widest">
@@ -68,6 +64,15 @@ const HeroSection = ({
                 </div>
             </div>
         </div>
+    );
+
+    return (
+        <Color src={finalImageUrl} crossOrigin="anonymous" format="hex">
+            {({ data, loading, error }) => {
+                const bgColor = (!loading && !error && data) ? data : '#1f2937';
+                return renderHeroContent(bgColor);
+            }}
+        </Color>
     )
 }
 
