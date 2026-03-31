@@ -7,7 +7,8 @@ import { useDebounce } from '../hooks/useDebounce';
 import { useAppAuth } from '../hooks/useAppAuth';
 import { useProfile } from '../hooks/useProfile';
 import { followUser, unfollowUser } from '../api/network';
-import { updateAvatar } from '../api/users';
+import { updateAvatar, uploadAvatar } from '../api/users';
+
 
 // --- UTILS ---
 const renderStars = (rating) => (
@@ -189,8 +190,11 @@ const UserProfile = () => {
     const [followLoading, setFollowLoading] = useState(false);
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [newAvatarUrl, setNewAvatarUrl] = useState('');
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState('');
     const [isSavingAvatar, setIsSavingAvatar] = useState(false);
+    const [uploadError, setUploadError] = useState('');
 
     const {
         profile, loadingProfile, error,
@@ -207,19 +211,29 @@ const UserProfile = () => {
     const isOwnProfile = user && (user.username === username);
 
     const handleSaveAvatar = async () => {
+        if (!selectedFile) return;
+        setUploadError('');
         try {
             setIsSavingAvatar(true);
-            await updateAvatar(newAvatarUrl);
 
+            // Step 1: Upload file to Cloudinary via backend
+            const cloudinaryUrl = await uploadAvatar(selectedFile);
+
+            // Step 2: Save the returned URL to the user's profile
+            await updateAvatar(cloudinaryUrl);
+
+            // Step 3: Update auth context so the header avatar refreshes
             if (user) {
-                login({ ...user, avatarUrl: newAvatarUrl, token: localStorage.getItem('token') });
+                login({ ...user, avatarUrl: cloudinaryUrl, token: localStorage.getItem('token') });
             }
 
             setIsEditModalOpen(false);
+            setSelectedFile(null);
+            setPreviewUrl('');
             window.location.reload();
         } catch (err) {
             console.error("Error saving avatar:", err);
-            alert("Could not update avatar. Make sure it's a valid URL.");
+            setUploadError(err.message || 'Could not update avatar. Please try again.');
         } finally {
             setIsSavingAvatar(false);
         }
@@ -264,42 +278,67 @@ const UserProfile = () => {
             {isEditModalOpen && (
                 <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
                     <div className="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
-                        <button onClick={() => setIsEditModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white">
+                        <button
+                            onClick={() => { setIsEditModalOpen(false); setSelectedFile(null); setPreviewUrl(''); setUploadError(''); }}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                        >
                             <FaTimes />
                         </button>
+
                         <h2 className="text-2xl font-bold mb-4">Edit Avatar</h2>
+
+                        {/* File picker */}
                         <div className="mb-6">
-                            <label className="block text-gray-400 text-sm mb-2">Image URL (JPEG, PNG, GIF)</label>
+                            <label className="block text-gray-400 text-sm mb-2">
+                                Choose an image (JPEG, PNG, GIF, WEBP — max 5MB)
+                            </label>
                             <input
-                                type="url"
-                                value={newAvatarUrl}
-                                onChange={(e) => setNewAvatarUrl(e.target.value)}
-                                placeholder="https://example.com/my-photo.jpg"
-                                className="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-orange-500 focus:outline-none"
+                                type="file"
+                                accept="image/jpeg,image/png,image/gif,image/webp"
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (!file) return;
+                                    setSelectedFile(file);
+                                    setPreviewUrl(URL.createObjectURL(file));
+                                    setUploadError('');
+                                }}
+                                className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-orange-500 file:text-white file:font-semibold hover:file:bg-orange-600 file:cursor-pointer cursor-pointer"
                             />
-                            {newAvatarUrl && (
+
+                            {/* Preview */}
+                            {previewUrl && (
                                 <div className="mt-4 flex flex-col items-center gap-2">
                                     <span className="text-xs text-gray-500">Preview:</span>
                                     <img
-                                        src={newAvatarUrl}
+                                        src={previewUrl}
                                         alt="Preview"
                                         className="w-24 h-24 rounded-full object-cover border-4 border-gray-700 bg-gray-900"
-                                        onError={(e) => { e.target.style.display = 'none'; }}
-                                        onLoad={(e) => { e.target.style.display = 'block'; }}
                                     />
                                 </div>
                             )}
+
+                            {/* Error message */}
+                            {uploadError && (
+                                <p className="mt-3 text-red-400 text-sm text-center">{uploadError}</p>
+                            )}
                         </div>
+
                         <div className="flex gap-3 justify-end">
-                            <button onClick={() => setIsEditModalOpen(false)} className="px-5 py-2 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors font-medium">
+                            <button
+                                onClick={() => { setIsEditModalOpen(false); setSelectedFile(null); setPreviewUrl(''); setUploadError(''); }}
+                                className="px-5 py-2 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors font-medium"
+                            >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSaveAvatar}
-                                disabled={isSavingAvatar || !newAvatarUrl}
-                                className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-bold transition-colors disabled:opacity-50"
+                                disabled={isSavingAvatar || !selectedFile}
+                                className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-bold transition-colors disabled:opacity-50 flex items-center gap-2"
                             >
-                                {isSavingAvatar ? 'Saving...' : 'Save Avatar'}
+                                {isSavingAvatar && (
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                )}
+                                {isSavingAvatar ? 'Uploading...' : 'Save Avatar'}
                             </button>
                         </div>
                     </div>

@@ -17,18 +17,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<SpotifyAuthService>();
 
+builder.Services.AddScoped<SpotifyAuthService>();
+builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<SpotifyApiService>();
 
-builder.Services.AddCors(options => // So we can use the api from the frontend
+builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy =>
         {
             policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         });
 });
 
@@ -56,6 +58,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"UNHANDLED EXCEPTION: {ex}");
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsJsonAsync(new { message = ex.Message });
+    }
+});
 
 DotNetEnv.Env.Load();
 
