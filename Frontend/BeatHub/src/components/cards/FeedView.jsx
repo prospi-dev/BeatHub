@@ -102,7 +102,7 @@ const FeedView = () => {
                                             {activity.username}
                                         </Link>
                                         <span className="text-gray-400 text-sm ml-1">
-                                            {activity.activityType === 'REVIEW' ? 'reviewed' : 'favorited'} a {activity.itemType}
+                                            {activity.activityType === 'REVIEW' ? 'reviewed' : 'favorited'} {activity.itemType}
                                         </span>
                                     </div>
                                 </div>

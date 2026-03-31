@@ -95,7 +95,8 @@ namespace BeatHub.Controllers
                 .Where(r => followingIds.Contains(r.UserId))
                 .OrderByDescending(r => r.CreatedAt)
                 .Take(20)
-                .Select(r => new {
+                .Select(r => new
+                {
                     ActivityType = "REVIEW",
                     Id = r.Id,
                     Username = r.User.Username,
@@ -113,7 +114,8 @@ namespace BeatHub.Controllers
                 .Where(f => followingIds.Contains(f.UserId))
                 .OrderByDescending(f => f.AddedAt)
                 .Take(20)
-                .Select(f => new {
+                .Select(f => new
+                {
                     ActivityType = "FAVORITE",
                     Id = f.Id,
                     Username = f.User.Username,
@@ -133,6 +135,29 @@ namespace BeatHub.Controllers
 
 
             return Ok(feed);
+        }
+
+        // GET: api/network/search?q={query}
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers([FromQuery] string q)
+        {
+            if (string.IsNullOrWhiteSpace(q))
+            {
+                return Ok(new List<object>());
+            }
+
+            var query = q.ToLower();
+
+            var users = await _db.Users
+                .Where(u => u.Username.ToLower().Contains(query))
+                .Take(20)
+                .Select(u => new
+                {
+                    u.Username,
+                })
+                .ToListAsync();
+
+            return Ok(users);
         }
     }
 }
