@@ -1,4 +1,5 @@
 ﻿using BeatHub.Data;
+using BeatHub.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -71,6 +72,31 @@ namespace BeatHub.Controllers
             };
 
             return Ok(userProfile);
+        }
+
+        // POST: api/Users/avatar
+        [HttpPost("avatar")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAvatar([FromBody] UpdateAvatarDto dto)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int loggedUserId))
+                return Unauthorized("Invalid user token.");
+
+            // Guard: reject base64 strings — only accept real URLs
+            if (string.IsNullOrWhiteSpace(dto.AvatarUrl) || dto.AvatarUrl.StartsWith("data:"))
+                return BadRequest("AvatarUrl must be a valid URL, not a base64 string. Upload the image to a storage service first.");
+
+            if (!Uri.TryCreate(dto.AvatarUrl, UriKind.Absolute, out _))
+                return BadRequest("AvatarUrl is not a valid URL.");
+
+            var user = await _context.Users.FindAsync(loggedUserId);
+            if (user == null) return NotFound("User not found.");
+
+            user.AvatarUrl = dto.AvatarUrl;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Avatar updated successfully!", avatarUrl = user.AvatarUrl });
         }
     }
 }

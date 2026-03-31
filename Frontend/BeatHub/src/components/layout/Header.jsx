@@ -11,7 +11,7 @@ const Header = ({
     bottomContent = null
 }) => {
     const { user, handleLogout } = useAppAuth();
-    console.log(user);
+
     return (
         <header className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-700 flex flex-col">
             <div className="relative flex items-center p-4 min-h-[84px]">

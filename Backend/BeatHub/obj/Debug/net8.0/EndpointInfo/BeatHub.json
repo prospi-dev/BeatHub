@@ -684,6 +684,37 @@
           }
         }
       }
+    },
+    "/api/Users/avatar": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAvatarDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAvatarDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAvatarDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -732,6 +763,16 @@
           "itemType": {
             "minLength": 1,
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateAvatarDto": {
+        "type": "object",
+        "properties": {
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
