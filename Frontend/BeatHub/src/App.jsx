@@ -4,14 +4,14 @@ import Catalog from './pages/catalog.jsx'
 import ArtistDetail from './pages/artistDetail.jsx'
 import AlbumDetail from './pages/albumDetail.jsx'
 import TrackDetail from './pages/trackDetail.jsx'
-import LoginPage from './pages/LoginPage.jsx'
+import LoginPage from './pages/loginPage.jsx'
 import AuthRoute from './components/router/AuthRoute.jsx'
 import RegisterPage from './pages/registerPage.jsx'
 import UserProfile from './pages/UserProfile.jsx'
 import FeedPage from './components/cards/FeedView.jsx'
 import PrivacyPolicy from './pages/Privacy.jsx';
-import TermsOfService from './pages/TermsOfService';
-import About from './pages/About';
+import TermsOfService from './pages/TermsOfService.jsx';
+import About from './pages/About.jsx';
 
 export default function App() {
     return (
