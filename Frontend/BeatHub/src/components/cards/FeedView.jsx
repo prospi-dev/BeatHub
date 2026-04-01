@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getActivityFeed } from '../../api/network'; 
+import { getActivityFeed } from '../../api/network';
 import { getTrackDetails, getAlbumDetails, getArtistsDetails } from '../../api/spotifyService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { FaHeart, FaStar, FaMusic, FaCompactDisc, FaMicrophone, FaUserFriends } from 'react-icons/fa';
@@ -90,13 +90,21 @@ const FeedView = () => {
                 <div className="space-y-6">
                     {feed.map((activity, idx) => (
                         <div key={`${activity.id}-${idx}`} className="bg-gray-800/50 border border-gray-700/50 rounded-2xl p-5 hover:border-gray-500 transition-colors">
-                            
+
                             {/* ACTIVITY HEADER */}
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-lg shadow-sm">
+                                    {activity.avatarUrl ? (
+                                        <img
+                                            src={activity.avatarUrl}
+                                            alt={`${activity.username}'s avatar`}
+                                            className="w-10 h-10 rounded-full object-cover shadow-sm"
+                                        />
+                                    ) : (<div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-lg shadow-sm">
                                         {activity.username.charAt(0).toUpperCase()}
                                     </div>
+                                    )}
+
                                     <div>
                                         <Link to={`/user/${activity.username}`} className="font-bold hover:text-orange-400 transition-colors">
                                             {activity.username}
@@ -113,9 +121,9 @@ const FeedView = () => {
 
                             <Link to={`/${activity.itemType}/${activity.spotifyItemId}`} className="block bg-gray-900/50 rounded-xl p-4 group">
                                 <div className="flex items-start gap-4">
-                                    <img 
-                                        src={activity.spotifyData?.image} 
-                                        alt="cover" 
+                                    <img
+                                        src={activity.spotifyData?.image}
+                                        alt="cover"
                                         className="w-16 h-16 rounded-lg object-cover shadow-md group-hover:scale-105 transition-transform"
                                     />
                                     <div className="flex-1 min-w-0">
@@ -137,7 +145,7 @@ const FeedView = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Show comment if it is a review */}
                                 {activity.activityType === 'REVIEW' && activity.comment && (
                                     <p className="mt-4 text-gray-300 text-sm italic border-l-2 border-gray-700 pl-3 line-clamp-3">
