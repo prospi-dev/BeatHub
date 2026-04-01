@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import BeatHubLogo from '../common/BeatHubLogo';
-import { FaArrowLeft, FaUser } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 import { useAppAuth } from '../../hooks/useAppAuth';
 
 const Header = ({
@@ -36,17 +36,25 @@ const Header = ({
                 {/* Header Actions (Auth) */}
                 <div className="flex items-center gap-3 ml-auto">
                     {user ? (
-                        <div className="flex items-center gap-4">
-                            <Link to={`/user/${user.username}`} className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-lg shadow-sm">
-                                {user.username.charAt(0).toUpperCase()}
-                            </Link>
+                        <Link to={`/user/${user.username}`} className="flex items-center gap-4">
+                            {user.avatarUrl ? (
+                                <img
+                                    src={user.avatarUrl}
+                                    alt={`${user.username}'s avatar`}
+                                    className="w-10 h-10 rounded-full object-cover border-4 border-gray-800 shadow-md shrink-0 z-10 bg-gray-900"
+                                />
+                            ) : (
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-md shrink-0  z-10">
+                                    {user.username.charAt(0).toUpperCase()}
+                                </div>
+                            )}
                             <button
                                 onClick={handleLogout}
                                 className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition cursor-pointer"
                             >
                                 Logout
                             </button>
-                        </div>
+                        </Link>
                     ) : (
                         <div className="flex items-center gap-4">
                             <Link

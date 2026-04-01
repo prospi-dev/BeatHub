@@ -20,6 +20,9 @@ public class User
     [Required]
     [JsonIgnore]
     public string PasswordHash { get; set; } = string.Empty;
+
+    [StringLength(2048)]
+    public string? AvatarUrl { get; set; }
     public ICollection<UserFollow> Followers { get; set; } = new List<UserFollow>();
     public ICollection<UserFollow> Following { get; set; } = new List<UserFollow>();
 

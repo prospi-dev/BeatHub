@@ -100,6 +100,7 @@ namespace BeatHub.Controllers
                     ActivityType = "REVIEW",
                     Id = r.Id,
                     Username = r.User.Username,
+                    AvatarUrl = r.User.AvatarUrl,
                     SpotifyItemId = r.SpotifyItemId,
                     ItemType = r.ItemType,
                     Rating = (int?)r.Rating, // Nullable int because favorites won't have a rating
@@ -119,6 +120,7 @@ namespace BeatHub.Controllers
                     ActivityType = "FAVORITE",
                     Id = f.Id,
                     Username = f.User.Username,
+                    AvatarUrl = f.User.AvatarUrl,
                     SpotifyItemId = f.SpotifyItemId,
                     ItemType = f.ItemType,
                     Rating = (int?)null, // Favorites don't have a rating
@@ -154,6 +156,7 @@ namespace BeatHub.Controllers
                 .Select(u => new
                 {
                     u.Username,
+                    u.AvatarUrl
                 })
                 .ToListAsync();
 

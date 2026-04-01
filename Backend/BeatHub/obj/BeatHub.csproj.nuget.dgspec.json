@@ -54,6 +54,10 @@
               "target": "Package",
               "version": "[4.1.0, )"
             },
+            "CloudinaryDotNet": {
+              "target": "Package",
+              "version": "[1.28.0, )"
+            },
             "DotNetEnv": {
               "target": "Package",
               "version": "[3.1.1, )"

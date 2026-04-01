@@ -451,5 +451,37 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BeatHub.Controllers.UsersController",
+    "Method": "UpdateAvatar",
+    "RelativePath": "api/Users/avatar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "BeatHub.DTOs.UpdateAvatarDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BeatHub.Controllers.UsersController",
+    "Method": "UploadAvatar",
+    "RelativePath": "api/Users/upload-avatar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

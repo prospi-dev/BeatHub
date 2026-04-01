@@ -46,10 +46,11 @@ export function AuthProvider({ children }) {
     localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify({
       username: data.username,
-      email: data.email
+      email: data.email,
+      avatarUrl: data.avatarUrl || null
     }))
     setToken(data.token)
-    setUser({ username: data.username, email: data.email })
+    setUser({ username: data.username, email: data.email, avatarUrl: data.avatarUrl || null })
   }
 
   const logout = () => {

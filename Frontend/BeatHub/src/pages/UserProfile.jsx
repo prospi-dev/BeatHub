@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaStar, FaHeart, FaMusic, FaCompactDisc, FaMicrophone, FaSearch } from 'react-icons/fa';
+import { FaStar, FaHeart, FaMusic, FaCompactDisc, FaMicrophone, FaSearch, FaEdit, FaTimes } from 'react-icons/fa';
 import Header from '../components/layout/Header';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useDebounce } from '../hooks/useDebounce';
 import { useAppAuth } from '../hooks/useAppAuth';
 import { useProfile } from '../hooks/useProfile';
 import { followUser, unfollowUser } from '../api/network';
+import { updateAvatar, uploadAvatar } from '../api/users';
+
 
 // --- UTILS ---
 const renderStars = (rating) => (
@@ -22,10 +24,30 @@ const getItemIcon = (type) => {
 };
 
 // --- UI COMPONENTS ---
-const ProfileHeader = ({ profile, searchQuery, setSearchQuery, isOwnProfile, isFollowing, handleFollowToggle, followLoading }) => (
+const ProfileHeader = ({ profile, searchQuery, setSearchQuery, isOwnProfile, isFollowing, handleFollowToggle, followLoading, onEditClick }) => (
     <div className="bg-gray-800/50 border border-gray-700 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl mb-12 relative overflow-hidden">
-        <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-md shrink-0 text-5xl z-10">
-            {profile.username.charAt(0).toUpperCase()}
+        <div className="relative group">
+            {profile.avatarUrl ? (
+                <img
+                    src={profile.avatarUrl}
+                    alt={`${profile.username}'s avatar`}
+                    className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 border-gray-800 shadow-md shrink-0 z-10 bg-gray-900"
+                />
+            ) : (
+                <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-md shrink-0 text-5xl z-10">
+                    {profile.username.charAt(0).toUpperCase()}
+                </div>
+            )}
+
+            {isOwnProfile && (
+                <button
+                    onClick={onEditClick}
+                    className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-pointer"
+                    title="Change Avatar"
+                >
+                    <FaEdit className="text-white text-2xl" />
+                </button>
+            )}
         </div>
 
         <div className="text-center md:text-left flex-1 z-10">
@@ -156,7 +178,7 @@ const FavoritesColumn = ({ rawFavorites, displayedFavorites, debouncedSearch, fa
 const UserProfile = () => {
     const { username } = useParams();
     const navigate = useNavigate();
-    const { user } = useAppAuth();
+    const { user, login } = useAppAuth();
 
     // Local Filters
     const [searchQuery, setSearchQuery] = useState('');
@@ -166,6 +188,13 @@ const UserProfile = () => {
     // Network States
     const [isFollowing, setIsFollowing] = useState(false);
     const [followLoading, setFollowLoading] = useState(false);
+
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState('');
+    const [isSavingAvatar, setIsSavingAvatar] = useState(false);
+    const [uploadError, setUploadError] = useState('');
 
     const {
         profile, loadingProfile, error,
@@ -180,6 +209,35 @@ const UserProfile = () => {
     }, [initialIsFollowing]);
 
     const isOwnProfile = user && (user.username === username);
+
+    const handleSaveAvatar = async () => {
+        if (!selectedFile) return;
+        setUploadError('');
+        try {
+            setIsSavingAvatar(true);
+
+            // Step 1: Upload file to Cloudinary via backend
+            const cloudinaryUrl = await uploadAvatar(selectedFile);
+
+            // Step 2: Save the returned URL to the user's profile
+            await updateAvatar(cloudinaryUrl);
+
+            // Step 3: Update auth context so the header avatar refreshes
+            if (user) {
+                login({ ...user, avatarUrl: cloudinaryUrl, token: localStorage.getItem('token') });
+            }
+
+            setIsEditModalOpen(false);
+            setSelectedFile(null);
+            setPreviewUrl('');
+            window.location.reload();
+        } catch (err) {
+            console.error("Error saving avatar:", err);
+            setUploadError(err.message || 'Could not update avatar. Please try again.');
+        } finally {
+            setIsSavingAvatar(false);
+        }
+    };
 
     const handleFollowToggle = async () => {
         if (!user) {
@@ -217,6 +275,75 @@ const UserProfile = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white pb-12">
             <Header showBackButton={true} onBackClick={() => navigate(-1)} />
+            {isEditModalOpen && (
+                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
+                        <button
+                            onClick={() => { setIsEditModalOpen(false); setSelectedFile(null); setPreviewUrl(''); setUploadError(''); }}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                        >
+                            <FaTimes />
+                        </button>
+
+                        <h2 className="text-2xl font-bold mb-4">Edit Avatar</h2>
+
+                        {/* File picker */}
+                        <div className="mb-6">
+                            <label className="block text-gray-400 text-sm mb-2">
+                                Choose an image (JPEG, PNG, GIF, WEBP — max 5MB)
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/jpeg,image/png,image/gif,image/webp"
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (!file) return;
+                                    setSelectedFile(file);
+                                    setPreviewUrl(URL.createObjectURL(file));
+                                    setUploadError('');
+                                }}
+                                className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-orange-500 file:text-white file:font-semibold hover:file:bg-orange-600 file:cursor-pointer cursor-pointer"
+                            />
+
+                            {/* Preview */}
+                            {previewUrl && (
+                                <div className="mt-4 flex flex-col items-center gap-2">
+                                    <span className="text-xs text-gray-500">Preview:</span>
+                                    <img
+                                        src={previewUrl}
+                                        alt="Preview"
+                                        className="w-24 h-24 rounded-full object-cover border-4 border-gray-700 bg-gray-900"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Error message */}
+                            {uploadError && (
+                                <p className="mt-3 text-red-400 text-sm text-center">{uploadError}</p>
+                            )}
+                        </div>
+
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                onClick={() => { setIsEditModalOpen(false); setSelectedFile(null); setPreviewUrl(''); setUploadError(''); }}
+                                className="px-5 py-2 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors font-medium"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveAvatar}
+                                disabled={isSavingAvatar || !selectedFile}
+                                className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-bold transition-colors disabled:opacity-50 flex items-center gap-2"
+                            >
+                                {isSavingAvatar && (
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                )}
+                                {isSavingAvatar ? 'Uploading...' : 'Save Avatar'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="container mx-auto px-4 mt-8 md:mt-12">
 
                 <ProfileHeader
@@ -227,6 +354,7 @@ const UserProfile = () => {
                     isFollowing={isFollowing}
                     handleFollowToggle={handleFollowToggle}
                     followLoading={followLoading}
+                    onEditClick={() => setIsEditModalOpen(true)}
                 />
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 min-h-[400px]">

@@ -1,4 +1,6 @@
 ﻿using BeatHub.Data;
+using BeatHub.DTOs;
+using BeatHub.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +13,11 @@ namespace BeatHub.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public UsersController(AppDbContext context)
+        private readonly CloudinaryService _cloudinary;
+        public UsersController(AppDbContext context, CloudinaryService cloudinary)
         {
             _context = context;
+            _cloudinary = cloudinary;
         }
 
         // GET: api/Users/{username}
@@ -47,7 +51,8 @@ namespace BeatHub.Controllers
             var userProfile = new
             {
                 Username = user.Username,
-                JoinedAt = user.Reviews.FirstOrDefault()?.CreatedAt ?? DateTime.UtcNow, 
+                AvatarUrl = user.AvatarUrl,
+                JoinedAt = user.Reviews.FirstOrDefault()?.CreatedAt ?? DateTime.UtcNow,
                 TotalReviews = user.Reviews.Count,
                 TotalFavorites = user.Favorites.Count,
                 isFollowing = isFollowing,
@@ -66,10 +71,60 @@ namespace BeatHub.Controllers
                     f.ItemType,
                     f.AddedAt
                 }),
-                
+
             };
 
             return Ok(userProfile);
+        }
+
+        // POST: api/Users/upload-avatar
+        // Receives a file, uploads to Cloudinary, returns the URL
+        [HttpPost("upload-avatar")]
+        [Authorize]
+        public async Task<IActionResult> UploadAvatar(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "No file provided." });
+
+            try
+            {
+                var url = await _cloudinary.UploadAvatarAsync(file);
+                return Ok(new { url });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        // POST: api/Users/avatar
+        // Saves a Cloudinary URL to the user's profile (no base64 allowed)
+        [HttpPost("avatar")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAvatar([FromBody] UpdateAvatarDto dto)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int loggedUserId))
+                return Unauthorized("Invalid user token.");
+
+            // Guard: reject base64 strings
+            if (string.IsNullOrWhiteSpace(dto.AvatarUrl) || dto.AvatarUrl.StartsWith("data:"))
+                return BadRequest(new { message = "AvatarUrl must be a valid URL, not a base64 string." });
+
+            if (!Uri.TryCreate(dto.AvatarUrl, UriKind.Absolute, out _))
+                return BadRequest(new { message = "AvatarUrl is not a valid URL." });
+
+            var user = await _context.Users.FindAsync(loggedUserId);
+            if (user == null) return NotFound("User not found.");
+
+            user.AvatarUrl = dto.AvatarUrl;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Avatar updated successfully!", avatarUrl = user.AvatarUrl });
         }
     }
 }

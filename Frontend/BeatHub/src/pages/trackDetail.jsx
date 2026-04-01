@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { getTrackDetails, getMultipleArtistsDetails } from '../api/spotifyService'
 import { IoMusicalNote } from 'react-icons/io5'
 
