@@ -9,6 +9,10 @@ import AuthRoute from './components/router/AuthRoute.jsx'
 import RegisterPage from './pages/registerPage.jsx'
 import UserProfile from './pages/UserProfile.jsx'
 import FeedPage from './components/cards/FeedView.jsx'
+import PrivacyPolicy from './pages/Privacy.jsx';
+import TermsOfService from './pages/TermsOfService';
+import About from './pages/About';
+
 export default function App() {
     return (
         <Routes>
@@ -21,6 +25,9 @@ export default function App() {
             <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
             <Route path="/user/:username" element={<UserProfile />} />
             <Route path="/feed" element={<FeedPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/about" element={<About />} />
         </Routes>
     )
 }

@@ -46,7 +46,7 @@ const FeedView = () => {
                 };
 
                 const hydratedFeed = await Promise.all(rawFeed.map(item => fetchSpotifyDetails(item)));
-                hydratedFeed.filter(i => i.activityType === 'FAVORITE').forEach(i => console.log(i));
+
                 setFeed(hydratedFeed);
                 setError(null);
             } catch (err) {
