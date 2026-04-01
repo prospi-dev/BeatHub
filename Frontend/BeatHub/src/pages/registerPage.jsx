@@ -26,12 +26,12 @@ const RegisterPage = () => {
         }, 5000)
 
         try {
-            // Llamada a la API de registro
+            // Registration API call
             await registerApi(form)
             // If signup is successful, redirect to login so the user can sign in
             navigate('/login')
         } catch (err) {
-            // Manejo de errores que vengan del backend (ej: "El correo ya existe")
+            // Handle backend errors (e.g., "Email already exists")
             setError(err.response?.data || 'Registration failed. Please check your details and try again.')
         } finally {
             clearTimeout(timeoutId)
@@ -41,13 +41,13 @@ const RegisterPage = () => {
     }
 
     return (
-        // Mismo fondo con gradiente
+        // Same gradient background
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black px-4 py-8">
             
-            {/* Contenedor Glassmorphism */}
+            {/* Glassmorphism container */}
             <div className="bg-gray-800/80 backdrop-blur-md p-8 sm:p-10 rounded-2xl shadow-2xl border border-gray-700/50 w-full max-w-md">
                 
-                {/* Cabecera / Branding */}
+                {/* Header / Branding */}
                 <div className="flex flex-col items-center justify-center mb-8">
                     <div className="bg-orange-500/10 p-4 rounded-full mb-4">
                         <FaMusic className="text-3xl text-orange-500" />
@@ -56,14 +56,14 @@ const RegisterPage = () => {
                     <p className='text-gray-400 mt-2 text-center'>Create an account to save your favorite music.</p>
                 </div>
 
-                {/* Mensaje de Error */}
+                {/* Error message */}
                 {error && (
                     <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg mb-6 text-sm text-center">
                         {error}
                     </div>
                 )}
 
-                {/* Formulario */}
+                {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Input Username */}
                     <div className="space-y-2">
@@ -124,7 +124,7 @@ const RegisterPage = () => {
                         )}
                     </button>
 
-                    {/* Mensaje de espera larga */}
+                    {/* Long wait message */}
                     {longWaitMessage && (
                         <p className="text-orange-400/80 text-sm text-center animate-pulse pt-2">
                             Setting up your account... this might take a few seconds!
@@ -132,7 +132,7 @@ const RegisterPage = () => {
                     )}
                 </form>
 
-                {/* Enlace al Login */}
+                {/* Login link */}
                 <div className="mt-8 text-center text-sm text-gray-400">
                     Already have an account?{' '}
                     <Link to="/login" className="text-orange-500 hover:text-orange-400 font-medium hover:underline transition-colors">

@@ -189,7 +189,7 @@ const Catalog = () => {
                 );
             }
 
-            // Si NO hay búsqueda, mostramos el feed normal
+            // If there is no search query, show the default feed
             return <FeedView />;
         }
 

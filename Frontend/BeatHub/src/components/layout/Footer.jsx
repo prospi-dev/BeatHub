@@ -10,7 +10,7 @@ const Footer = () => {
                 {/* Footer Links */}
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-center md:text-left'>
                     
-                    {/* Columna 1: Platform (Funcionalidad Real) */}
+                    {/* Column 1: Platform (Actual functionality) */}
                     <div>
                         <h4 className='text-lg font-semibold text-white mb-4'>Platform</h4>
                         <div className='space-y-2'>
@@ -20,19 +20,19 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Columna 2: About the Project */}
+                    {/* Column 2: About the Project */}
                     <div>
                         <h4 className='text-lg font-semibold text-white mb-4'>Project Info</h4>
                         <div className='space-y-2'>
                             <Link to="/about" className='block text-gray-400 hover:text-orange-500 transition-colors'>About BeatHub</Link>
-                            {/* Cambia esto por tu enlace de GitHub real */}
+                            {/* Replace this with your actual GitHub link */}
                             <a href="https://github.com/prospi-dev/BeatHub" target="_blank" rel="noopener noreferrer" className='flex items-center justify-center md:justify-start gap-2 text-gray-400 hover:text-white transition-colors'>
                                 <FaGithub /> Source Code
                             </a>
                         </div>
                     </div>
 
-                    {/* Columna 3: Legal (Las páginas que creamos) */}
+                    {/* Column 3: Legal (The pages we created) */}
                     <div>
                         <h4 className='text-lg font-semibold text-white mb-4'>Legal</h4>
                         <div className='space-y-2'>
