@@ -21,11 +21,11 @@ const RegisterPage = () => {
         setLoading(true)
         setLongWaitMessage(false)
 
-        if (formData.password.length < 5) {
+        if (form.password.length < 5) {
             setError('Password must be at least 5 characters long.');
             return;
         }
-        
+
         const timeoutId = setTimeout(() => {
             setLongWaitMessage(true)
         }, 5000)
