@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using BeatHub.Data;
+﻿using BeatHub.Data;
 using BeatHub.DTOs;
 using BeatHub.DTOs.Auth;
 using BeatHub.Models;
