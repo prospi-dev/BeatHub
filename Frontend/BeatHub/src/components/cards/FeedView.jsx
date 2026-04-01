@@ -127,9 +127,17 @@ const FeedView = () => {
                                 {/* ACTIVITY HEADER */}
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-lg shadow-sm">
-                                            {activity.username.charAt(0).toUpperCase()}
-                                        </div>
+                                        {activity.avatarUrl ? (
+                                            <img
+                                                src={activity.avatarUrl}
+                                                alt={activity.username}
+                                                className="w-10 h-10 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-xl text-white shadow-sm shrink-0">
+                                                {activity.username.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
                                         <div>
                                             <Link to={`/user/${activity.username}`} className="font-bold hover:text-orange-400 transition-colors">
                                                 {activity.username}
