@@ -32,7 +32,7 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Column 3: Legal (The pages we created) */}
+                    {/* Column 3: Legal */}
                     <div>
                         <h4 className='text-lg font-semibold text-white mb-4'>Legal</h4>
                         <div className='space-y-2'>

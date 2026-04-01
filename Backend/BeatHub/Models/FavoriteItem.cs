@@ -8,16 +8,16 @@ namespace BeatHub.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "User ID is required.")]
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
         public User User { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Spotify Item ID is required.")]
         public string SpotifyItemId { get; set; } = string.Empty; // Spotify ID 
 
-        [Required]
+        [Required(ErrorMessage = "Item type is required.")]
         public string ItemType { get; set; } = string.Empty; // "artist", "album", or "track"
 
         public DateTime AddedAt { get; set; } = DateTime.UtcNow;
