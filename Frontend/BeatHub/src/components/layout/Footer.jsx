@@ -1,45 +1,62 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 import SpotifyFullLogo from '../../assets/logos/Full_Logo_White_CMYK.svg'
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { FaGithub } from 'react-icons/fa';
 
-const footer = () => {
+const Footer = () => {
     return (
-        <footer className='bg-gray-900 px-6 py-12'>
-            <div className='max-w-6xl mx-auto flex flex-col md:flex-row md:justify-between space-y-12 md:space-y-0'>
+        <footer className='bg-gray-900 px-6 py-12 mt-auto border-t border-gray-800'>
+            <div className='max-w-6xl mx-auto'>
                 {/* Footer Links */}
-                <div className='flex space-x-20'>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-center md:text-left'>
+                    
+                    {/* Columna 1: Platform (Funcionalidad Real) */}
                     <div>
-                        <h4 className='text-lg font-semibold text-white mb-4'>Support</h4>
+                        <h4 className='text-lg font-semibold text-white mb-4'>Platform</h4>
                         <div className='space-y-2'>
-                            <a href="#" className='block text-gray-400 hover:text-orange-500 transition-colors'>Help Center</a>
-                            <a href="#" className='block text-gray-400 hover:text-orange-500 transition-colors'>Contact Us</a>
-                            <a href="#" className='block text-gray-400 hover:text-orange-500 transition-colors'>Report Issue</a>
+                            <Link to="/catalog" className='block text-gray-400 hover:text-orange-500 transition-colors'>Browse Catalog</Link>
+                            <Link to="/catalog?type=feed" className='block text-gray-400 hover:text-orange-500 transition-colors'>Community Feed</Link>
+                            <Link to="/login" className='block text-gray-400 hover:text-orange-500 transition-colors'>Login / Register</Link>
                         </div>
                     </div>
+
+                    {/* Columna 2: About the Project */}
+                    <div>
+                        <h4 className='text-lg font-semibold text-white mb-4'>Project Info</h4>
+                        <div className='space-y-2'>
+                            <Link to="/about" className='block text-gray-400 hover:text-orange-500 transition-colors'>About BeatHub</Link>
+                            {/* Cambia esto por tu enlace de GitHub real */}
+                            <a href="https://github.com/prospi-dev/BeatHub" target="_blank" rel="noopener noreferrer" className='flex items-center justify-center md:justify-start gap-2 text-gray-400 hover:text-white transition-colors'>
+                                <FaGithub /> Source Code
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Columna 3: Legal (Las páginas que creamos) */}
                     <div>
                         <h4 className='text-lg font-semibold text-white mb-4'>Legal</h4>
                         <div className='space-y-2'>
                             <Link to="/privacy" className='block text-gray-400 hover:text-orange-500 transition-colors'>Privacy Policy</Link>
                             <Link to="/terms" className='block text-gray-400 hover:text-orange-500 transition-colors'>Terms of Service</Link>
-                            <Link to="/about" className='block text-gray-400 hover:text-orange-500 transition-colors'>About</Link>
                         </div>
                     </div>
+
                 </div>
 
-                {/* Spotify Attribution */}
-                <div>
-                    <div className='flex flex-col md:flex-row md:items-center gap-6'>
-                        <div className='mb-6 md:mb-0'>
-                            <img src={SpotifyFullLogo} alt="Spotify Logo" className='w-32 mb-4' />
-                            <p className='text-gray-400 text-sm max-w-md'>
+                {/* Spotify Attribution & Copyright */}
+                <div className='border-t border-gray-800 pt-8'>
+                    <div className='flex flex-col md:flex-row md:items-center md:justify-between'>
+                        <div className='mb-6 md:mb-0 flex flex-col items-center md:items-start'>
+                            <img src={SpotifyFullLogo} alt="Spotify Logo" className='w-32 mb-4 opacity-80 hover:opacity-100 transition-opacity' />
+                            <p className='text-gray-500 text-xs md:text-sm max-w-md text-center md:text-left'>
                                 This product uses the Spotify Web API but is not endorsed, certified or otherwise approved by Spotify.
                                 Spotify is a trademark of Spotify AB.
                             </p>
                         </div>
-                        <div className='text-center md:text-right mt-6 md:mt-0'>
+                        <div className='text-center md:text-right'>
+                            <p className='text-orange-500 font-medium text-sm mb-1'>🚀 Educational Portfolio Project</p>
                             <p className='text-gray-500 text-sm'>© 2025 BeatHub.</p>
-                            <p className='text-gray-600 text-xs mt-1'>Made with ♥ by prospi-dev</p>
+                            <p className='text-gray-600 text-xs mt-1'>Made by prospi-dev</p>
                         </div>
                     </div>
                 </div>
@@ -48,4 +65,4 @@ const footer = () => {
     )
 }
 
-export default footer;
+export default Footer;
