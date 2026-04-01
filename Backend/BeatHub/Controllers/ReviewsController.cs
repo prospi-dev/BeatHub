@@ -43,7 +43,8 @@ namespace BeatHub.Controllers
                     r.CreatedAt,
                     r.ItemType,
                     Username = r.User.Username,
-                    Email = r.User.Email
+                    Email = r.User.Email,
+                    AvatarUrl = r.User.AvatarUrl
                 })
                 .ToListAsync();
 

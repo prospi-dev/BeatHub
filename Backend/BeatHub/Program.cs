@@ -59,20 +59,6 @@ builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
 
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"UNHANDLED EXCEPTION: {ex}");
-        context.Response.StatusCode = 500;
-        await context.Response.WriteAsJsonAsync(new { message = ex.Message });
-    }
-});
-
 DotNetEnv.Env.Load();
 
 // Configure the HTTP request pipeline.
