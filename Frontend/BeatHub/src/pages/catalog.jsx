@@ -178,9 +178,17 @@ const Catalog = () => {
                                     to={`/user/${u.username}`}
                                     className="flex items-center gap-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700/50 rounded-2xl p-4 transition-colors"
                                 >
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-xl text-white shadow-sm shrink-0">
-                                        {u.username.charAt(0).toUpperCase()}
-                                    </div>
+                                    {u.avatarUrl ? (
+                                        <img
+                                            src={u.avatarUrl}
+                                            alt={u.username}
+                                            className="w-12 h-12 rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-500 to-pink-500 flex items-center justify-center font-bold text-xl text-white shadow-sm shrink-0">
+                                            {u.username.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
                                     <span className="font-bold text-lg">{u.username}</span>
                                 </Link>
                             ))
