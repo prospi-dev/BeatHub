@@ -27,6 +27,8 @@ namespace BeatHub.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegisterDto dto)
         {
+            if (await _db.Users.AnyAsync(u => u.Username == dto.Username))
+                return Conflict("Username already in use");
             if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
                 return Conflict("Email already in use.");
 
