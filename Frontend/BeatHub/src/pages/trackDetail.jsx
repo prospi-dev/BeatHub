@@ -95,7 +95,7 @@ const TrackDetail = () => {
                             title={track?.name}
                             imageUrl={track?.album?.images?.[0]?.url}
                             subtitleInfo={
-                                <div className="flex items-center gap-2 text-gray-300">
+                                <div className="flex items-center gap-2 text-gray-300 flex-wrap md:flex-row">
                                     <span className="font-semibold">
                                         {track?.artists?.map(artist => artist.name).join(', ')}
                                     </span>

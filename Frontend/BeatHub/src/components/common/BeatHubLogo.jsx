@@ -11,7 +11,7 @@ const beatHubLogo = () => {
       <img
         src={logo}
         alt="BeatHub Logo"
-        className="w-14 md:w-32 lg:w-40"
+        className="w-8 md:w-32 lg:w-40"
         onClick={() => navigate('/catalog')}
       />
     </picture>
