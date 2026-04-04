@@ -12,6 +12,7 @@ import FeedPage from './components/cards/FeedView.jsx'
 import PrivacyPolicy from './pages/Privacy.jsx';
 import TermsOfService from './pages/TermsOfService.jsx';
 import About from './pages/About.jsx';
+import NotFound from './pages/NotFound.jsx'
 
 export default function App() {
     return (
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/about" element={<About />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     )
 }
