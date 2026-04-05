@@ -75,6 +75,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/api/health", () => Results.Ok(new
+{
+    status = "Healthy",
+    timestamp = DateTime.UtcNow,
+    environment = app.Environment.EnvironmentName
+}));
+
 // Apply migrations at startup
 using (var scope = app.Services.CreateScope())
 {
