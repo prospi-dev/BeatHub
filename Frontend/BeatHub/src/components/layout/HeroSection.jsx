@@ -3,23 +3,30 @@ import { useNavigate } from 'react-router-dom'
 import { FaShare, FaStar } from 'react-icons/fa'
 import { useAppAuth } from '../../hooks/useAppAuth'
 import FavoriteButton from '../common/FavoriteButton'
-// Import the default COMPONENT, NOT the hook
 import Color from 'color-thief-react'
 
 const HeroSection = memo(({
-    itemId,         
-    type,           
-    title,          
-    imageUrl,       
-    subtitleInfo,   
-    existingUserReview, 
-    onReviewClick   
+    itemId,
+    type,
+    title,
+    imageUrl,
+    subtitleInfo,
+    existingUserReview,
+    onReviewClick
 }) => {
+    const [copied, setCopied] = useState(false)
+
     const navigate = useNavigate()
     const { user } = useAppAuth()
 
     const fallbackImage = `/default-${type?.toLowerCase() || 'album'}.png`
     const finalImageUrl = imageUrl || fallbackImage
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     const renderHeroContent = (bgColor) => (
         <div
@@ -56,8 +63,15 @@ const HeroSection = memo(({
                                 {existingUserReview ? 'Edit Review' : 'Add Review'}
                             </button>
                             <FavoriteButton itemId={itemId} itemType={type} />
-                            <button className="border border-gray-400 hover:border-white text-white p-3 rounded-full transition-colors">
-                                <FaShare />
+                            <button
+                                onClick={handleShare}
+                                className={`flex items-center justify-center border p-3 rounded-full transition-all duration-300 min-w-[48px] ${copied
+                                        ? 'border-green-500 bg-green-500/20 text-green-500'
+                                        : 'border-gray-400 hover:border-white text-white hover:bg-white/10'
+                                    }`}
+                                title="Share"
+                            >
+                                {copied ? <FaCheck className="animate-in zoom-in" /> : <FaShare className="animate-in zoom-in" />}
                             </button>
                         </div>
                     </div>
