@@ -1,5 +1,5 @@
 import React, { memo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useState } from 'react-router-dom'
 import { FaShare, FaStar } from 'react-icons/fa'
 import { useAppAuth } from '../../hooks/useAppAuth'
 import FavoriteButton from '../common/FavoriteButton'
