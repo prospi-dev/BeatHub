@@ -67,6 +67,18 @@
         }
       }
     },
+    "/api/health": {
+      "get": {
+        "tags": [
+          "BeatHub"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Favorites/my-favorites": {
       "get": {
         "tags": [
@@ -874,6 +886,9 @@
   "tags": [
     {
       "name": "Auth"
+    },
+    {
+      "name": "BeatHub"
     },
     {
       "name": "Favorites"

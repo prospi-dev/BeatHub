@@ -13,9 +13,12 @@ import PrivacyPolicy from './pages/Privacy.jsx';
 import TermsOfService from './pages/TermsOfService.jsx';
 import About from './pages/About.jsx';
 import NotFound from './pages/NotFound.jsx'
+import ScrollToTop from './components/router/ScrollToTop.jsx'
 
 export default function App() {
     return (
+<>
+        <ScrollToTop />
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/catalog" element={<Catalog />} />
@@ -31,5 +34,6 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
+</>
     )
 }
