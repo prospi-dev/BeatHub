@@ -41,9 +41,9 @@ const LoginPage = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black px-4">
-            
+
             <div className="bg-gray-800/80 backdrop-blur-md p-8 sm:p-10 rounded-2xl shadow-2xl border border-gray-700/50 w-full max-w-md">
-                
+
                 <div className="flex flex-col items-center justify-center mb-8">
                     <div className="bg-orange-500/10 p-4 rounded-full mb-4">
                         <FaMusic className="text-3xl text-orange-500" />
@@ -71,7 +71,7 @@ const LoginPage = () => {
                             required
                         />
                     </div>
-                    
+
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-300">Password</label>
                         <input
@@ -88,12 +88,12 @@ const LoginPage = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-orange-500 text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 focus:ring-4 focus:ring-orange-500/50 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-6"
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all hover:shadow-lg hover:shadow-orange-500/30 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                     >
                         {loading ? (
                             <>
                                 <FaSpinner className="animate-spin" />
-                                Logging in...
+                                Processing...
                             </>
                         ) : (
                             'Log In'
@@ -113,7 +113,7 @@ const LoginPage = () => {
                         Sign up here
                     </Link>
                 </div>
-                
+
             </div>
         </div>
     );
