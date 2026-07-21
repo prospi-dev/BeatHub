@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaStar, FaTimes, FaUserCircle } from 'react-icons/fa';
 import { getReviewsByItem, deleteReview } from '../../api/reviews';
 import ReviewCard from './ReviewCard';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/auth-context';
 import useModal from '../../hooks/useModal';
 import { Link } from 'react-router-dom';
 

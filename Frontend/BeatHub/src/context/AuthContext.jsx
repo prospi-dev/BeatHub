@@ -1,18 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react"
-
-const AuthContext = createContext(null)
-
-// Decode the JWT payload and check if it's expired
-function isTokenExpired(token) {
-  if (!token) return true
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    // exp is in seconds, Date.now() is in milliseconds
-    return payload.exp * 1000 < Date.now()
-  } catch {
-    return true
-  }
-}
+import { useState, useEffect } from "react"
+import { AuthContext, isTokenExpired } from "./auth-context"
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => {
@@ -30,6 +17,13 @@ export function AuthProvider({ children }) {
     const stored = localStorage.getItem('user')
     return stored ? JSON.parse(stored) : null
   })
+
+  const logout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    setToken(null)
+    setUser(null)
+  }
 
   // Periodically check if the token has expired (every minute)
   useEffect(() => {
@@ -53,20 +47,9 @@ export function AuthProvider({ children }) {
     setUser({ username: data.username, email: data.email, avatarUrl: data.avatarUrl || null })
   }
 
-  const logout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    setToken(null)
-    setUser(null)
-  }
-
   return (
     <AuthContext.Provider value={{ token, user, login, logout, isTokenExpired }}>
       {children}
     </AuthContext.Provider>
   )
-}
-
-export function useAuth() {
-  return useContext(AuthContext)
 }

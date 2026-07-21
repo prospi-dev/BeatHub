@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaHeart } from 'react-icons/fa';
-import { useFavorites } from '../../context/FavoritesContext';
-import { useAuth } from '../../context/AuthContext';
+import { useFavorites } from '../../context/favorites-context';
+import { useAuth } from '../../context/auth-context';
 import { useNavigate } from 'react-router-dom';
 
 const FavoriteButton = ({ itemId, itemType, layout = 'hero' }) => {

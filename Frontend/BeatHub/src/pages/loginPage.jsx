@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { login as loginApi } from '../api/auth'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/auth-context'
 import { FaMusic, FaSpinner } from 'react-icons/fa'
 
 const LoginPage = () => {

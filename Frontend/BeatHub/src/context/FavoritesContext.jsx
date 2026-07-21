@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppAuth } from '../hooks/useAppAuth';
 import { getUserFavorites, addFavorite as apiAddFavorite, removeFavorite as apiRemoveFavorite } from '../api/favorites';
-
-const FavoritesContext = createContext();
+import { FavoritesContext } from './favorites-context';
 
 export const FavoritesProvider = ({ children }) => {
     const { user } = useAppAuth();
@@ -67,5 +66,3 @@ export const FavoritesProvider = ({ children }) => {
         </FavoritesContext.Provider>
     );
 };
-
-export const useFavorites = () => useContext(FavoritesContext);
