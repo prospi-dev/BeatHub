@@ -1,5 +1,5 @@
 import { IoIosMenu, IoIosSearch, IoIosStar } from "react-icons/io";
-import { FaHeadphones, FaUsers, FaPen, FaHeart, FaChartLine } from "react-icons/fa";
+import { FaHeadphones, FaUsers, FaPen, FaHeart, FaRss } from "react-icons/fa";
 import { IoMusicalNote } from "react-icons/io5";
 import { HiMusicNote } from "react-icons/hi";
 import { useNavigate } from 'react-router-dom';
@@ -102,22 +102,22 @@ const Home = () => {
                             <p className='text-gray-300 leading-relaxed'>Join a community of music lovers. Share your favorites and discover what others are listening to.</p>
                         </div>
 
-                        {/* Rate & Recommend */}
+                        {/* Rate with Stars */}
                         <div className='bg-gray-800/50 p-8 rounded-2xl backdrop-blur-sm hover:transform hover:scale-105 transition-all duration-300'>
                             <div className='bg-gradient-to-br from-yellow-500 to-orange-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6'>
                                 <IoIosStar className='text-2xl text-white' />
                             </div>
-                            <h3 className='text-2xl font-semibold mb-4 text-white'>Rate & Recommend</h3>
-                            <p className='text-gray-300 leading-relaxed'>Rate tracks and get personalized recommendations based on your music taste and preferences.</p>
+                            <h3 className='text-2xl font-semibold mb-4 text-white'>Rate with Stars</h3>
+                            <p className='text-gray-300 leading-relaxed'>Give albums, tracks, and artists a star rating and back it up with a written review — all in one place.</p>
                         </div>
 
-                        {/* Track Analytics */}
+                        {/* Activity Feed */}
                         <div className='bg-gray-800/50 p-8 rounded-2xl backdrop-blur-sm hover:transform hover:scale-105 transition-all duration-300'>
                             <div className='bg-gradient-to-br from-blue-500 to-cyan-500 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6'>
-                                <FaChartLine className='text-2xl text-white' />
+                                <FaRss className='text-2xl text-white' />
                             </div>
-                            <h3 className='text-2xl font-semibold mb-4 text-white'>Music Analytics</h3>
-                            <p className='text-gray-300 leading-relaxed'>Get insights into your listening habits and discover trends in your musical journey.</p>
+                            <h3 className='text-2xl font-semibold mb-4 text-white'>Follow the Feed</h3>
+                            <p className='text-gray-300 leading-relaxed'>Follow other listeners and keep up with their latest reviews and favorites in your activity feed.</p>
                         </div>
 
                         {/* Save Favorites */}
