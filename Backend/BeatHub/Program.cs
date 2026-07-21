@@ -110,6 +110,8 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<AppDbContext>();
         context.Database.Migrate();
+
+        await SeedTestUserAsync(context, app.Configuration);
     }
     catch (Exception ex)
     {
@@ -119,3 +121,28 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// Idempotent: only creates the user the first time it doesn't exist yet.
+// No role/admin concept exists in this app — this is just a known login
+// for demoing the deployed app, not a privileged account.
+static async Task SeedTestUserAsync(AppDbContext context, IConfiguration config)
+{
+    var email = config["Seed:TestUserEmail"] ?? "demo@beathub.dev";
+    var username = config["Seed:TestUserUsername"] ?? "demo";
+    var password = config["Seed:TestUserPassword"] ?? "Demo12345!";
+
+    if (await context.Users.AnyAsync(u => u.Email == email))
+    {
+        return;
+    }
+
+    context.Users.Add(new User
+    {
+        Username = username,
+        Email = email,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+        AvatarUrl = $"https://api.dicebear.com/7.x/bottts/svg?seed={username}"
+    });
+
+    await context.SaveChangesAsync();
+}
