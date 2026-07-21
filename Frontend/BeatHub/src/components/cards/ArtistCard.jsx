@@ -1,7 +1,6 @@
-import React, { use } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const artistCard = ({ artist }) => {
+const ArtistCard = ({ artist }) => {
 
     const navigate = useNavigate()
 
@@ -26,4 +25,4 @@ const artistCard = ({ artist }) => {
     )
 }
 
-export default artistCard
+export default ArtistCard

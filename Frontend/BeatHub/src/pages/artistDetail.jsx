@@ -13,7 +13,7 @@ import HeroSection from '../components/layout/HeroSection.jsx'
 import Header from '../components/layout/Header.jsx'
 import FavoriteButton from '../components/common/FavoriteButton.jsx'
 
-const artistDetail = () => {
+const ArtistDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [artist, setArtist] = useState(null)
@@ -317,4 +317,4 @@ const artistDetail = () => {
   )
 }
 
-export default artistDetail
+export default ArtistDetail

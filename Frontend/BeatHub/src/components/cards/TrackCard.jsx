@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-const trackCard = ({ track }) => {
+const TrackCard = ({ track }) => {
     const navigate = useNavigate();
     
     return (
@@ -28,4 +28,4 @@ const trackCard = ({ track }) => {
     )
 }
 
-export default trackCard
+export default TrackCard

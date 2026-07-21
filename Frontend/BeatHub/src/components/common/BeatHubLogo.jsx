@@ -1,8 +1,7 @@
-import React from 'react'
-import logo from '../../assets/logos/beathub.png' 
+import logo from '../../assets/logos/beathub.png'
 import logoSmall from '../../assets/logos/beathubSmall.png'
 import {useNavigate} from 'react-router-dom'
-const beatHubLogo = () => {
+const BeatHubLogo = () => {
   const navigate = useNavigate()
 
   return (
@@ -18,4 +17,4 @@ const beatHubLogo = () => {
   )
 }
 
-export default beatHubLogo
+export default BeatHubLogo

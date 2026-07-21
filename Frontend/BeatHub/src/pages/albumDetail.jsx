@@ -14,7 +14,7 @@ import FavoriteButton from '../components/common/FavoriteButton'
 
 import { formatDuration, getTotalDuration, formatReleaseDate } from '../utils/utils';
 
-const albumDetail = () => {
+const AlbumDetail = () => {
     // 1. States
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -219,4 +219,4 @@ const albumDetail = () => {
     )
 }
 
-export default albumDetail
+export default AlbumDetail
