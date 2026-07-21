@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using BeatHub.Services;
 
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -58,8 +60,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
-
-DotNetEnv.Env.Load();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
