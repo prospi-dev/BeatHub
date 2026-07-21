@@ -75,7 +75,7 @@ const About = () => {
                                 <FaGithub className="text-xl" /> GitHub
                             </a>
                             <a 
-                                href="https://www.linkedin.com/in/manuel-prosperi-664425274" 
+                                href="https://www.linkedin.com/in/manuel-enrique-prosperi-edreira-664425274/"
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors"
