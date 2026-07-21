@@ -126,7 +126,7 @@ const TrackDetail = () => {
                                     {/* Reviews Section */}
                                     <ReviewList
                                         itemId={id}
-                                        itemType="album"
+                                        itemType="track"
                                         onUserReviewFound={setExistingUserReview}
                                         refreshTrigger={refreshReviewsTrigger}
                                     />
