@@ -200,12 +200,12 @@ const Catalog = () => {
         return (
             <div className={contentClass}>
                 {data.map((item) => {
-                    const cardProps = { key: item.id, [type.slice(0, -1)]: item, gridColumns };
+                    const cardProps = { [type.slice(0, -1)]: item, gridColumns };
                     switch (type) {
-                        case 'feed': return <FeedView />;
-                        case 'albums': return <AlbumCard {...cardProps} />;
-                        case 'artists': return <ArtistCard {...cardProps} />;
-                        case 'tracks': return <TrackCard {...cardProps} />;
+                        case 'feed': return <FeedView key={item.id} />;
+                        case 'albums': return <AlbumCard key={item.id} {...cardProps} />;
+                        case 'artists': return <ArtistCard key={item.id} {...cardProps} />;
+                        case 'tracks': return <TrackCard key={item.id} {...cardProps} />;
                         default: return null;
                     }
                 })}

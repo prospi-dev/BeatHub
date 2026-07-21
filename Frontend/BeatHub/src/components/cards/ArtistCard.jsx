@@ -1,11 +1,8 @@
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const ArtistCard = ({ artist }) => {
-
-    const navigate = useNavigate()
-
     return (
-        <div key={artist.id} className="w-full hover:scale-105" onClick={() => navigate(`/artist/${artist.id}`)}>
+        <Link to={`/artist/${artist.id}`} className="block w-full hover:scale-105">
             {artist.images?.[0]?.url ? (
                 <img
                     src={artist.images?.[0]?.url || '/default-artist.png'}
@@ -21,7 +18,7 @@ const ArtistCard = ({ artist }) => {
             )}
             <h3 className="text-sm font-semibold truncate text-center">{artist.name}</h3>
             <p className="text-xs text-gray-400 text-center">{artist.followers?.total.toLocaleString()} followers</p>
-        </div>
+        </Link>
     )
 }
 

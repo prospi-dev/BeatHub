@@ -1,10 +1,7 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 const TrackCard = ({ track }) => {
-    const navigate = useNavigate();
-    
     return (
-        <div key={track.id} className="w-full hover:scale-105" onClick={() => navigate(`/track/${track.id}`)}>
+        <Link to={`/track/${track.id}`} className="block w-full hover:scale-105">
             {track.album?.images?.[0]?.url ? (
                 <img
                     src={track.album?.images?.[0]?.url || '/default-artist.png'}
@@ -24,7 +21,7 @@ const TrackCard = ({ track }) => {
             <div className="text-xs text-gray-500 mt-1">
                 {Math.floor(track.duration_ms / 60000)}:{String(Math.floor((track.duration_ms % 60000) / 1000)).padStart(2, '0')}
             </div>
-        </div>
+        </Link>
     )
 }
 
