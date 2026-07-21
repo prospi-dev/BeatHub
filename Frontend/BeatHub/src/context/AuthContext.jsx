@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
+import { useNavigate } from "react-router-dom"
 import { AuthContext, isTokenExpired } from "./auth-context"
 
 export function AuthProvider({ children }) {
@@ -18,12 +19,14 @@ export function AuthProvider({ children }) {
     return stored ? JSON.parse(stored) : null
   })
 
-  const logout = () => {
+  const navigate = useNavigate()
+
+  const logout = useCallback(() => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     setToken(null)
     setUser(null)
-  }
+  }, [])
 
   // Periodically check if the token has expired (every minute)
   useEffect(() => {
@@ -34,7 +37,18 @@ export function AuthProvider({ children }) {
       }
     }, 60 * 1000)
     return () => clearInterval(interval)
-  }, [token])
+  }, [token, logout])
+
+  // A 401 from any request means the session is invalid: tear it down
+  // and send the user to login (dispatched by the axios interceptor).
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      logout()
+      navigate('/login')
+    }
+    window.addEventListener('auth:unauthorized', handleUnauthorized)
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized)
+  }, [logout, navigate])
 
   const login = (data) => {
     localStorage.setItem('token', data.token)

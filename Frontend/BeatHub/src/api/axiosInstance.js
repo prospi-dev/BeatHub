@@ -12,16 +12,14 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
 })
 
-// Response interceptor — if any request gets a 401,
-// clear the session and send the user back to login.
-// This handles expired tokens automatically.
+// Response interceptor — on any 401, notify the AuthProvider so it can
+// tear down the session and redirect. Kept side-effect free here (no
+// localStorage or hard navigation) to keep logout logic in one place.
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      window.location.href = '/login'
+      window.dispatchEvent(new CustomEvent('auth:unauthorized'))
     }
     return Promise.reject(error)
   }
