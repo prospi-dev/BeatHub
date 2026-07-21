@@ -27,6 +27,18 @@ const Header = ({
                     <div className="flex items-center">
                         <BeatHubLogo />
                     </div>
+
+                    <nav className="hidden sm:flex items-center gap-0.5 md:gap-1">
+                        <Link to="/catalog" className="text-sm font-medium text-gray-300 hover:text-white px-2.5 py-2 md:px-3 rounded-lg hover:bg-gray-800 transition-colors">
+                            Catalog
+                        </Link>
+                        <Link to="/feed" className="text-sm font-medium text-gray-300 hover:text-white px-2.5 py-2 md:px-3 rounded-lg hover:bg-gray-800 transition-colors">
+                            Feed
+                        </Link>
+                        <Link to="/about" className="text-sm font-medium text-gray-300 hover:text-white px-2.5 py-2 md:px-3 rounded-lg hover:bg-gray-800 transition-colors">
+                            About
+                        </Link>
+                    </nav>
                 </div>
 
                 {centerContent && (
