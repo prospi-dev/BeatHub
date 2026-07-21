@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { getNewReleases, getPopularArtists, getTopTracks, search } from '../api/spotifyService.js';
+import { getNewReleases, getPopularArtists, getTopTracks, search, getTrackDetails, getAlbumDetails, getArtistsDetails } from '../api/spotifyService.js';
 import { getActivityFeed } from '../api/network.js';
 export const useCatalogData = () => {
     const [data, setData] = useState([]);
