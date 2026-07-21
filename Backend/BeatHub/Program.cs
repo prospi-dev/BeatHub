@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddScoped<SpotifyAuthService>();
+builder.Services.AddSingleton<SpotifyAuthService>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<SpotifyApiService>();
 
