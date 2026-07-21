@@ -95,10 +95,6 @@ namespace BeatHub.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = ex.Message });
-            }
         }
 
         // POST: api/Users/avatar
