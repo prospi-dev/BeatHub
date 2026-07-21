@@ -21,10 +21,6 @@ const [initialIsFollowing, setInitialIsFollowing] = useState(false);
     const [loadingFavs, setLoadingFavs] = useState(false);
     const [error, setError] = useState(null);
 
-    // Filters
-    const [searchQuery, setSearchQuery] = useState('');
-    // Use debouncedSearch in useEffect and filters, not searchQuery directly
-
     // Pagination
     const ITEMS_PER_PAGE = 5;
     const [reviewsPage, setReviewsPage] = useState(1);
@@ -58,7 +54,7 @@ const [initialIsFollowing, setInitialIsFollowing] = useState(false);
             // 2. Save to cache before returning
             spotifyCache.current.set(item.spotifyItemId, spotifyData);
             return { ...item, spotifyData };
-        } catch (e) {
+        } catch {
             const fallback = { name: 'Unknown Item', image: null, artist: 'Unknown' };
             spotifyCache.current.set(item.spotifyItemId, fallback);
             return { ...item, spotifyData: fallback };
@@ -76,7 +72,7 @@ const [initialIsFollowing, setInitialIsFollowing] = useState(false);
                 setRawReviews(data.reviews || []);
                 setRawFavorites(data.favorites || []);
                 setError(null);
-            } catch (err) {
+            } catch {
                 setError("User not found or an error occurred.");
             } finally {
                 setLoadingProfile(false);

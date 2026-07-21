@@ -13,7 +13,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 import Header from '../components/layout/Header.jsx';
 import { useCatalogData } from '../hooks/useCatalogData.js';
 import { useAppAuth } from '../hooks/useAppAuth.js';
-import { getActivityFeed, searchUsers } from '../api/network';
+import { searchUsers } from '../api/network';
 import { useDebounce } from '../hooks/useDebounce.js';
 
 const EmptyState = ({ type, searchQuery, handleClearSearch }) => (
@@ -128,20 +128,6 @@ const Catalog = () => {
             }
         }
     }, [searchInput, searchQuery, debouncedSearch, location.search, navigate]);
-
-    const handleTypeChange = (newType) => {
-        // If user tries to access the feed without being logged in, redirect to login page
-        if (newType === 'feed' && !user) {
-            navigate('/login');
-            return;
-        }
-        setIsSearchActive(false);
-        setSearchInput('');
-        setSortBy('relevance');
-        const newSearchParams = new URLSearchParams();
-        newSearchParams.set('type', newType);
-        navigate(`/catalog?${newSearchParams.toString()}`);
-    };
 
     const handleClearSearch = () => {
         setSearchInput('');

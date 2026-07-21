@@ -36,7 +36,7 @@ const ReviewList = ({ itemId, itemType, onUserReviewFound, refreshTrigger }) => 
             if (onUserReviewFound) onUserReviewFound(null);
             deleteModal.close();
             setReviewToDelete(null);
-        } catch (err) {
+        } catch {
             alert("Failed to delete the review. Please try again.");
         }
     };

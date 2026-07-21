@@ -45,7 +45,7 @@ export const useCatalogData = () => {
                     spotifyData = { name: res.artist.name, image: res.artist.images[0]?.url, artist: 'Artist' };
                 }
                 return { ...item, spotifyData };
-            } catch (e) {
+            } catch {
                 return { ...item, spotifyData: { name: 'Unknown', image: '/default-album.png', artist: 'Unknown' } };
             }
         }));
@@ -73,10 +73,11 @@ export const useCatalogData = () => {
                 }
             } else {
                 switch (type) {
-                    case 'albums':
+                    case 'albums': {
                         const albumsData = await getNewReleases(currentOffset);
                         result = albumsData.albums?.items || [];
                         break;
+                    }
                     case 'artists': result = await getPopularArtists(currentOffset); break;
                     case 'tracks': result = await getTopTracks(currentOffset); break;
                 }
@@ -113,10 +114,11 @@ export const useCatalogData = () => {
                 }
             } else {
                 switch (type) {
-                    case 'albums':
+                    case 'albums': {
                         const albumsData = await getNewReleases(nextOffset);
                         result = albumsData.albums?.items || [];
                         break;
+                    }
                     case 'artists': result = await getPopularArtists(nextOffset); break;
                     case 'tracks': result = await getTopTracks(nextOffset); break;
                 }

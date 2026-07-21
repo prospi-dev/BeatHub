@@ -40,7 +40,7 @@ const FeedView = () => {
                             spotifyData = { name: res.artist.name, image: res.artist.images[0]?.url, artist: 'Artist' };
                         }
                         return { ...item, spotifyData };
-                    } catch (e) {
+                    } catch {
                         return { ...item, spotifyData: { name: 'Unknown Item', image: '/default-album.png', artist: 'Unknown' } };
                     }
                 };
