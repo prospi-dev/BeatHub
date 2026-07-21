@@ -7,6 +7,8 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Neon](https://img.shields.io/badge/Neon-00E599?style=for-the-badge&logo=postgresql&logoColor=white)](https://neon.tech/)
 [![Spotify API](https://img.shields.io/badge/Spotify_API-1DB954?style=for-the-badge&logo=spotify&logoColor=white)](https://developer.spotify.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](./LICENSE)
+
 
 > **BeatHub** is a full-stack, community-driven platform built for music lovers to discover, rate, and discuss their favorite albums, tracks, and artists. Think of it as "Letterboxd for Music", powered by the vast Spotify catalog.
 
